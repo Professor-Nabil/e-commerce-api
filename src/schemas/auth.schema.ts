@@ -6,3 +6,10 @@ export const RegisterSchema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters long"),
   }),
 });
+
+export const LoginSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+    password: z.string(), // No need for min length here, just check if it's there
+  }),
+});
