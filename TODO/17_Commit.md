@@ -1,0 +1,6 @@
+- feat(auth): implement login with JWT and password verification
+  - Added `POST /api/auth/login` endpoint with Zod validation
+  - Implemented password comparison using `bcrypt`
+  - Integrated `jsonwebtoken` for secure stateless authentication
+  - Added `JWT_SECRET` configuration for dev and test environments
+  - Verified full Auth flow with integration tests

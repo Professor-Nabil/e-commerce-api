@@ -1,0 +1,5 @@
+- feat(auth): add Zod validation middleware for registration
+  - Integrated zod for schema-based request validation
+  - Created reusable validate middleware to intercept bad data before controllers
+  - Added validation tests for invalid email and short passwords
+  - Refined errorHandler to handle Zod validation errors gracefully

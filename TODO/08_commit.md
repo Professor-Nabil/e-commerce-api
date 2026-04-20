@@ -1,0 +1,4 @@
+- refactor: modularize routes and add global error handling
+  - Moved product routes to src/routes/product.routes.ts
+  - Implemented errorHandler middleware for consistent JSON error responses
+  - Configured app.ts with the "Middleware -> Routes -> Error Handler" pipeline

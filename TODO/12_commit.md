@@ -1,0 +1,6 @@
+- feat(auth): implement user registration with TDD and isolated test DB
+  - Created AuthService and AuthController for user registration
+  - Added password hashing using bcrypt
+  - Configured vitest with a dedicated ecommerce_test_db in MariaDB
+  - Implemented setup.ts to reset test database state before every run
+  - Verified POST /api/auth/register with an automated integration test
