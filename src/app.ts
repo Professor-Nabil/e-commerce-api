@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
 import productRoutes from "./routes/product.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -21,13 +22,19 @@ app.get("/", (_req, res) => {
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/products", productRoutes);
+app.use("/api/auth", authRoutes); // Add this!
 
 // 3. BOTTOM MIDDLEWARE (The Safety Net)
 // This MUST be after all routes
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server: http://localhost:${PORT}`);
-  console.log(`📑 Docs:   http://localhost:${PORT}/api-docs`);
-});
+
+// Only start the listener if this file is run directly (not imported by tests)
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server: http://localhost:${PORT}`);
+  });
+}
+
+export default app; // Export for supertest
