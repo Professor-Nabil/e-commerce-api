@@ -13,4 +13,14 @@ describe("Auth Endpoints", () => {
     expect(res.body).toHaveProperty("id");
     expect(res.body.email).toBe("test@example.com");
   });
+
+  it("should return 400 if email is invalid", async () => {
+    const res = await request(app).post("/api/auth/register").send({
+      email: "not-an-email",
+      password: "123",
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.error.message).toContain("Invalid email");
+  });
 });
