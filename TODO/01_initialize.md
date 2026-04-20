@@ -1,0 +1,5 @@
+- chore: initialize project with typescript, environment templates, and plan
+  - Added PLAN.md and TREE.sh for project tracking
+  - Configured .env.example for MariaDB and JWT settings
+  - Setup tsconfig.json for ESNext/NodeNext
+  - Initialized package.json with scripts for tsx and prisma

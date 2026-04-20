@@ -1,0 +1,6 @@
+- feat(api): implement product listing and swagger documentation
+  - Setup Express with TypeScript and ES Modules
+  - Integrated Singleton Prisma Client for MariaDB connections
+  - Created Product Service/Controller for GET /api/products
+  - Configured Swagger UI at /api-docs for API documentation
+  - Added cors and express.json middlewares
