@@ -1,16 +1,17 @@
 import express from "express";
-import cors from "cors"; // 1. Import CORS
+import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
-import { getProducts } from "./controllers/product.controller.js";
+import productRoutes from "./routes/product.routes.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 
-// Middlewares
-app.use(cors()); // 2. Enable CORS
+// 1. TOP MIDDLEWARES (Config & Parsers)
+app.use(cors());
 app.use(express.json());
 
-// 3. Simple Home Route
+// 2. ROUTES
 app.get("/", (_req, res) => {
   res.json({
     message: "Welcome to the E-Commerce API",
@@ -18,11 +19,12 @@ app.get("/", (_req, res) => {
   });
 });
 
-// Documentation Route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/api/products", productRoutes);
 
-// API Routes
-app.get("/api/products", getProducts);
+// 3. BOTTOM MIDDLEWARE (The Safety Net)
+// This MUST be after all routes
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
