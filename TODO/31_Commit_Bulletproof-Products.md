@@ -1,0 +1,5 @@
+- feat(product): add Zod validation and request sanitization
+  - Integrated CreateProductSchema for strict request body validation
+  - Ensured price and stock are non-negative and properly typed
+  - Added integration tests for invalid product data (the "Sad Path")
+  - Verified middleware pipeline: Auth -> RBAC -> Validation -> Controller

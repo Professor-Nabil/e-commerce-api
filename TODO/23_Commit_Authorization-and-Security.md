@@ -1,0 +1,6 @@
+- feat(security): implement JWT authentication and Role-Based Access Control (RBAC)
+  - Created authenticate middleware to verify JWT tokens
+  - Created authorize middleware to restrict routes by User Role (ADMIN/CUSTOMER)
+  - Integrated Role Enum from Prisma into the Auth service
+  - Protected POST /api/products to ensure only Admins can manage inventory
+  - Added integration tests for protected product routes

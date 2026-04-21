@@ -1,0 +1,5 @@
+- feat(product): implement GET by ID and 404 error handling
+  - Added `getProductById` service and controller logic
+  - Implemented 404 response for non-existent product lookups
+  - Verified automatic "Create-then-Fetch" flow in integration tests
+  - Handled numeric ID parsing in route parameters

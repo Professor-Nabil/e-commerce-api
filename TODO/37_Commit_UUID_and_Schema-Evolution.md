@@ -1,0 +1,6 @@
+- feat(db): transition to UUIDs and implement Cart/CartItem models
+  - Refactored all Primary Keys from auto-incrementing Int to UUID strings
+  - Added Cart and CartItem models with relational constraints
+  - Implemented onDelete: Cascade to ensure clean data removal
+  - Updated ProductService and AuthController to handle string-based IDs
+  - Verified schema integrity with updated integration tests

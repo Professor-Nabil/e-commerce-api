@@ -1,0 +1,5 @@
+- fix(test): resolve database race conditions with isolated worker schemas
+  - Implemented dynamic DATABASE_URL generation based on VITEST_POOL_ID
+  - Added automated MariaDB database creation in setup.ts
+  - Updated Prisma config to re-read environment variables per worker
+  - Enabled parallel test execution in vitest.config.ts

@@ -1,0 +1,6 @@
+- feat(cart): implement shopping cart with upsert logic and UUID integration
+  - Created Cart and CartItem services with atomic upsert functionality
+  - Synchronized JWT payload and Express types to use id (UUID) consistently
+  - Added Zod validation for cart operations
+  - Established 100% automated integration tests for the full Admin-to-Customer flow
+  - Registered cart routes in the main application pipeline
