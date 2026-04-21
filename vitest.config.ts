@@ -3,13 +3,11 @@ import path from "path";
 
 export default defineConfig({
   test: {
-    // Option A: Use path.resolve to be safe
     setupFiles: [path.resolve(__dirname, "./tests/setup.ts")],
-
-    // Option B: Ensure environment is set to node
     environment: "node",
-
-    // Disable threads to prevent MariaDB connection issues during parallel runs
-    pool: "forks",
+    // We can now run in parallel!
+    // If MariaDB struggles with too many connections,
+    // you can limit this to pool: 'threads' with a maxInstances.
+    pool: "threads",
   },
 });
