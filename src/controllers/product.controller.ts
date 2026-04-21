@@ -17,3 +17,16 @@ export const getProducts = async (
     next(error);
   }
 };
+
+export const createProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const product = await ProductService.createProduct(req.body);
+    res.status(201).json(product);
+  } catch (error) {
+    next(error);
+  }
+};

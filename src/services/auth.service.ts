@@ -11,6 +11,7 @@ export const registerUser = async (userData: any) => {
     data: {
       email: userData.email,
       password: hashedPassword,
+      role: userData.role || "CUSTOMER", // Use the role if provided, else default
     },
     select: {
       // Don't return the password to the user!
