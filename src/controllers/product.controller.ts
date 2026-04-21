@@ -30,3 +30,22 @@ export const createProduct = async (
     next(error);
   }
 };
+
+export const getProductById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const product = await ProductService.getProductById(Number(id));
+
+    if (!product) {
+      return res.status(404).json({ error: { message: "Product not found" } });
+    }
+
+    res.json(product);
+  } catch (error) {
+    next(error);
+  }
+};
