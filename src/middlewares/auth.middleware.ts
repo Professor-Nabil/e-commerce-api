@@ -17,10 +17,12 @@ export const authenticate = (
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "supersecret",
-    ) as any;
+    // const decoded = jwt.verify( token, process.env.JWT_SECRET || "supersecret",) as any;
+    // Inside your authenticate middleware after verifying the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+      id: string;
+      role: string;
+    };
     // Attach user info to the request object so controllers can use it
     req.user = decoded;
     next();

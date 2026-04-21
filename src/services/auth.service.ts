@@ -37,10 +37,17 @@ export const loginUser = async (credentials: any) => {
   if (!isPasswordValid) throw new Error("Invalid credentials");
 
   // Sign the token
+  // const token = jwt.sign(
+  //   { userId: user.id, role: user.role },
+  //   process.env.JWT_SECRET || "supersecret",
+  //   { expiresIn: "1d" },
+  // );
+
+  // When creating the token during login/register
   const token = jwt.sign(
-    { userId: user.id, role: user.role },
-    process.env.JWT_SECRET || "supersecret",
-    { expiresIn: "1d" },
+    { id: user.id, role: user.role }, // Ensure this is 'id'
+    process.env.JWT_SECRET!,
+    { expiresIn: "1h" },
   );
 
   return { token, user: { id: user.id, email: user.email, role: user.role } };

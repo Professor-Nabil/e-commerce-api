@@ -5,6 +5,7 @@ import { swaggerSpec } from "./config/swagger.js";
 import productRoutes from "./routes/product.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
+import cartRoutes from "./routes/cart.routes.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/", (_req, res) => {
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes); // Add this!
+app.use("/api/cart", cartRoutes);
 
 // 3. BOTTOM MIDDLEWARE (The Safety Net)
 // This MUST be after all routes
