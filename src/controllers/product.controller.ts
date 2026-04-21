@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import * as ProductService from "../services/product.service.js";
 
 export const getProducts = async (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -38,7 +38,7 @@ export const getProductById = async (
 ) => {
   try {
     const { id } = req.params;
-    const product = await ProductService.getProductById(Number(id));
+    const product = await ProductService.getProductById(id);
 
     if (!product) {
       return res.status(404).json({ error: { message: "Product not found" } });

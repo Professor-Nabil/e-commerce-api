@@ -13,22 +13,49 @@ enum Role {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid()) // Unguessable ID
   email     String   @unique
   password  String
   role      Role     @default(CUSTOMER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relationships will go here later (e.g., Cart, Orders)
+  // A user has one cart
+  cart Cart?
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid()) // Unguessable ID
   name        String
   description String   @db.Text
   price       Decimal  @db.Decimal(10, 2)
   stock       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // A product can be in many cart items
+  cartItems CartItem[]
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique // One cart per user
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Ensure a user can't have the same product twice in a cart (just increment quantity instead)
+  @@unique([cartId, productId])
 }

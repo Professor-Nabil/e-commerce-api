@@ -7,3 +7,5 @@
 ./src/controllers/product.controller.ts
 ./src/routes/product.routes.ts
 ./tests/product.test.ts
+./prisma/schema.prisma
+./prisma/seed.ts

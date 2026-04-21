@@ -14,7 +14,7 @@ export const createProduct = async (data: Prisma.ProductCreateInput) => {
   });
 };
 
-export const getProductById = async (id: number) => {
+export const getProductById = async (id: string) => {
   return await prisma.product.findUnique({
     where: { id },
   });
