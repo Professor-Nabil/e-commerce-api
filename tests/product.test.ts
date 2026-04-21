@@ -43,3 +43,30 @@ describe("Product Protection", () => {
     expect(res.statusCode).toEqual(201);
   });
 });
+
+describe("Product Validation", () => {
+  it("should return 400 if product description is too short", async () => {
+    // 1. Get Admin Token (assuming admin@test.com is registered in your setup or previous test)
+    const loginRes = await request(app)
+      .post("/api/auth/login")
+      .send({ email: "admin@test.com", password: "password123" });
+
+    const token = loginRes.body.token;
+
+    // 2. Try to create product with short description
+    const res = await request(app)
+      .post("/api/products")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Pro Mouse",
+        description: "Too short",
+        price: 50,
+        stock: 100,
+      });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.error.message).toContain(
+      "Description must be at least 10 characters",
+    );
+  });
+});
