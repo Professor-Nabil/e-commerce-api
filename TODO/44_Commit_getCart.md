@@ -1,0 +1,4 @@
+- feat(cart): add GET cart endpoint with product relation inclusion
+  - Implemented `getCart` service using Prisma's `include` for nested product data
+  - Added controller logic to return empty cart structure for new users
+  - Expanded integration tests to verify relational data integrity in JSON responses

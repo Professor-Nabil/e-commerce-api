@@ -1,0 +1,5 @@
+- feat(orders): implement checkout system with transaction safety
+  - Added `Order` and `OrderItem` models to Prisma schema
+  - Created `OrderService` with atomic `$transaction` to handle stock decrement and cart clearing
+  - Implemented `POST /api/orders/checkout` endpoint
+  - Added comprehensive integration tests for happy path, empty cart, and stock out scenarios
