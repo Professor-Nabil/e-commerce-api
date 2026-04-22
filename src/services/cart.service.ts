@@ -33,3 +33,16 @@ export const addToCart = async (
     },
   });
 };
+
+export const getCart = async (userId: string) => {
+  return await prisma.cart.findUnique({
+    where: { userId },
+    include: {
+      items: {
+        include: {
+          product: true, // This joins the Product table to give us names/prices
+        },
+      },
+    },
+  });
+};
