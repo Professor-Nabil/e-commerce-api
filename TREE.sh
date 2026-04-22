@@ -39,3 +39,8 @@
 ./src/services/cart.service.ts
 ./src/schemas/cart.schema.ts
 ./tests/cart.test.ts
+
+./src/routes/order.routes.ts
+./src/controllers/order.controller.ts
+./src/services/order.service.ts
+./tests/checkout.test.ts

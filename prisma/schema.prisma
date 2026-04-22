@@ -21,7 +21,8 @@ model User {
   updatedAt DateTime @updatedAt
 
   // A user has one cart
-  cart Cart?
+  cart   Cart?
+  orders Order[]
 }
 
 model Product {
@@ -34,7 +35,8 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   // A product can be in many cart items
-  cartItems CartItem[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
 }
 
 model Cart {
@@ -58,4 +60,31 @@ model CartItem {
 
   // Ensure a user can't have the same product twice in a cart (just increment quantity instead)
   @@unique([cartId, productId])
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+  totalAmount Decimal     @db.Decimal(10, 2)
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2) // Storing price at time of purchase
 }
