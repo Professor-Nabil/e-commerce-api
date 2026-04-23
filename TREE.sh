@@ -44,3 +44,4 @@
 ./src/controllers/order.controller.ts
 ./src/services/order.service.ts
 ./tests/checkout.test.ts
+./tests/orders.test.ts

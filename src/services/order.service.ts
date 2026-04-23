@@ -51,3 +51,24 @@ export const checkout = async (userId: string) => {
     return order;
   });
 };
+
+export const getOrderHistory = async (userId: string) => {
+  return await prisma.order.findMany({
+    where: { userId },
+    include: {
+      items: {
+        include: {
+          product: {
+            select: {
+              name: true,
+              description: true,
+              // We don't include current product price here
+              // because orderItem.price is the historical price.
+            },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" }, // Newest orders first
+  });
+};
