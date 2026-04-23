@@ -1,0 +1,5 @@
+- docs: complete OpenAPI/Swagger specification for all MVP endpoints
+  - Added full documentation for Auth, Products, Cart, and Orders
+  - Implemented Bearer Token security definition for testing protected routes
+  - Added Admin product creation and individual product fetch paths
+  - Defined reusable schemas for Product, Order, and Cart models

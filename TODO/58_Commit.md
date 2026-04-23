@@ -1,0 +1,5 @@
+- feat(orders): implement secure checkout and order history audit trail
+  - Created Order and OrderItem models with historical price snapshotting
+  - Implemented atomic checkout using Prisma $transaction for stock integrity
+  - Added GET /api/orders for relational history (Order > Items > Product)
+  - Added comprehensive test suite covering empty carts and stock limits
