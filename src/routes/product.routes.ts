@@ -27,13 +27,4 @@ router.post(
   createProduct,
 );
 
-// Pipeline: Auth -> Role Check -> Data Validation -> Controller
-router.post(
-  "/",
-  authenticate,
-  authorize(["ADMIN"]),
-  validate(CreateProductSchema),
-  createProduct,
-);
-
 export default router;
