@@ -267,5 +267,29 @@ export const swaggerSpec = {
         },
       },
     },
+    // ... inside paths ...
+    "/api/orders": {
+      get: {
+        tags: ["Orders"],
+        security: [{ bearerAuth: [] }],
+        summary: "Get current user's order history",
+        description:
+          "Returns all orders placed by the authenticated user, including items and product names.",
+        responses: {
+          200: {
+            description: "A list of past orders",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Order" },
+                },
+              },
+            },
+          },
+          401: { description: "Unauthorized - Valid JWT required" },
+        },
+      },
+    },
   },
 };
