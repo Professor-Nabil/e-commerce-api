@@ -1,0 +1,1 @@
+- feat(cart): implement quantity updates, removal, clear cart, and sync documentation

@@ -1,0 +1,1 @@
+- feat(cart): implement stock validation and custom AppError architecture

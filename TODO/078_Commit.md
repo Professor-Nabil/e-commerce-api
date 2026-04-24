@@ -1,0 +1,5 @@
+- test: restructure test suite into e2e, integration, and helpers
+  - Created auth.helper.ts to unify admin/customer token generation
+  - Grouped integration tests by domain (auth, cart, orders, products)
+  - Moved checkout flow to e2e directory
+  - Refactored all tests to use helper functions for cleaner logic"

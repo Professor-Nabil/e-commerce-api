@@ -1,0 +1,1 @@
+- feat(admin): add product update and soft-delete with validation

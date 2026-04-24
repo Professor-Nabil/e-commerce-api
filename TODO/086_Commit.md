@@ -1,0 +1,1 @@
+- docs(admin): add api docs for update and soft-delete with validation

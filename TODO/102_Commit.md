@@ -1,0 +1,1 @@
+- feat(order): implement AppError refactor for checkout and sync e2e tests
