@@ -1,0 +1,5 @@
+- docs: complete API spec including order history and admin product management
+  - Mapped all remaining routes to Swagger specification
+  - Documented `GET /api/orders` with full relational response schema
+  - Verified security definitions for all protected endpoints
+  - Ensured UUID formatting is consistent across all documentation paths

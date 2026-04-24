@@ -1,0 +1,5 @@
+- git commit -m "refactor(security): harden auth and update test suites
+  - Enforce CUSTOMER role as default in registration service
+  - Implement prisma/seed-first-admin.ts for secure admin bootstrapping
+  - Refactor cart, checkout, order, and product tests to use manual DB injection for admins
+  - Update Swagger documentation to remove role selection from public registration"
