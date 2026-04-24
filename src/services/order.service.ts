@@ -1,4 +1,5 @@
 import { prisma } from "../config/prisma.js";
+import { AppError } from "../utils/appError.js";
 
 export const checkout = async (userId: string) => {
   return await prisma.$transaction(async (tx) => {
@@ -9,14 +10,14 @@ export const checkout = async (userId: string) => {
     });
 
     if (!cart || cart.items.length === 0) {
-      throw new Error("Cart is empty");
+      throw new AppError("Cart is empty", 400); // Clean 400
     }
 
     // 2. Validate stock and calculate total
     let total = 0;
     for (const item of cart.items) {
       if (item.product.stock < item.quantity) {
-        throw new Error(`Not enough stock for ${item.product.name}`);
+        throw new AppError(`Not enough stock for ${item.product.name}`, 400);
       }
       total += Number(item.product.price) * item.quantity;
     }
@@ -26,7 +27,7 @@ export const checkout = async (userId: string) => {
       data: {
         userId,
         totalAmount: total,
-        status: "COMPLETED", // For MVP, we'll assume payment is instant
+        status: "COMPLETED",
         items: {
           create: cart.items.map((item) => ({
             productId: item.productId,
@@ -37,7 +38,7 @@ export const checkout = async (userId: string) => {
       },
     });
 
-    // 4. Update Stock
+    // 4. Update Stock (Atomically)
     for (const item of cart.items) {
       await tx.product.update({
         where: { id: item.productId },

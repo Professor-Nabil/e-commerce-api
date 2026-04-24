@@ -10,12 +10,8 @@ export const checkout = async (
     const userId = req.user!.id;
     const order = await OrderService.checkout(userId);
     res.status(201).json(order);
-  } catch (error: any) {
-    // If it's a validation error (stock/empty cart), send 400
-    if (error.message === "Cart is empty" || error.message.includes("stock")) {
-      return res.status(400).json({ error: { message: error.message } });
-    }
-    next(error);
+  } catch (error) {
+    next(error); // Just pass it along!
   }
 };
 

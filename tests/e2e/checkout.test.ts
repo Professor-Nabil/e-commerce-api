@@ -65,7 +65,7 @@ describe("Checkout System E2E", () => {
     expect(res.body.error.message).toBe("Cart is empty");
   });
 
-  it("should fail checkout if stock is insufficient", async () => {
+  it("should fail to add to cart if stock is insufficient", async () => {
     const prod = await request(app)
       .post("/api/products")
       .set("Authorization", `Bearer ${adminToken}`)
@@ -78,17 +78,14 @@ describe("Checkout System E2E", () => {
 
     const token = await getCustomerToken("unlucky_buyer@test.com");
 
-    // Add 2 to cart when only 1 exists
-    await request(app)
+    // 1. Try to add 2 when only 1 exists - THIS should fail now
+    const res = await request(app)
       .post("/api/cart")
       .set("Authorization", `Bearer ${token}`)
       .send({ productId: prod.body.id, quantity: 2 });
 
-    const res = await request(app)
-      .post("/api/orders/checkout")
-      .set("Authorization", `Bearer ${token}`);
-
     expect(res.statusCode).toEqual(400);
-    expect(res.body.error.message).toContain("Not enough stock");
+    // Since we used AppError, it should return the custom message
+    expect(res.body.error.message).toContain("Insufficient stock");
   });
 });
