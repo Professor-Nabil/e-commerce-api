@@ -35,3 +35,47 @@ export const getCart = async (
     next(error);
   }
 };
+
+export const updateQuantity = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { quantity } = req.body;
+    const item = await CartService.updateQuantity(
+      req.user!.id,
+      req.params.productId,
+      quantity,
+    );
+    res.json(item);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const removeItem = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    await CartService.removeItem(req.user!.id, req.params.productId);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const clearCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    await CartService.clearCart(req.user!.id);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};

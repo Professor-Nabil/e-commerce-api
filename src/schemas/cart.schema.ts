@@ -6,3 +6,10 @@ export const AddToCartSchema = z.object({
     quantity: z.number().int().positive("Quantity must be at least 1"),
   }),
 });
+
+// New schema for updates
+export const UpdateCartItemSchema = z.object({
+  body: z.object({
+    quantity: z.number().int().positive(),
+  }),
+});

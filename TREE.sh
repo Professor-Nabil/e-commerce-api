@@ -41,6 +41,7 @@
 ./src/services/cart.service.ts
 ./src/schemas/cart.schema.ts
 ./tests/integration/cart/cart.test.ts
+./tests/integration/cart/cart-management.test.ts
 # Order ======================================================
 ./src/routes/order.routes.ts
 ./src/controllers/order.controller.ts

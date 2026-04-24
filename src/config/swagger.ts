@@ -319,6 +319,66 @@ export const swaggerSpec = {
         },
         responses: { 200: { description: "Item added" } },
       },
+      delete: {
+        tags: ["Cart"],
+        security: [{ bearerAuth: [] }],
+        summary: "Clear all items from the cart",
+        responses: {
+          204: { description: "Cart cleared successfully" },
+          401: { description: "Unauthorized" },
+        },
+      },
+    },
+    "/api/cart/{productId}": {
+      patch: {
+        tags: ["Cart"],
+        security: [{ bearerAuth: [] }],
+        summary: "Update quantity of a specific item in the cart",
+        parameters: [
+          {
+            name: "productId",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["quantity"],
+                properties: {
+                  quantity: { type: "integer", minimum: 1, example: 5 },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Quantity updated" },
+          400: { description: "Validation error" },
+          404: { description: "Item not found in cart" },
+        },
+      },
+      delete: {
+        tags: ["Cart"],
+        security: [{ bearerAuth: [] }],
+        summary: "Remove a specific item from the cart",
+        parameters: [
+          {
+            name: "productId",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        responses: {
+          204: { description: "Item removed successfully" },
+          404: { description: "Item not found in cart" },
+        },
+      },
     },
     // ORDER ENDPOINTS
     "/api/orders/checkout": {
