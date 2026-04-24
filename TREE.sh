@@ -27,22 +27,24 @@
 ./src/controllers/product.controller.ts
 ./src/services/product.service.ts
 ./src/schemas/product.schema.ts
-./tests/product.test.ts
+./tests/integration/products/product.test.ts
 # Auth =======================================================
 ./src/routes/auth.routes.ts
 ./src/controllers/auth.controller.ts
 ./src/services/auth.service.ts
 ./src/schemas/auth.schema.ts
-./tests/auth.test.ts
+./tests/integration/auth/auth.test.ts
 # Cart =======================================================
 ./src/routes/cart.routes.ts
 ./src/controllers/cart.controller.ts
 ./src/services/cart.service.ts
 ./src/schemas/cart.schema.ts
-./tests/cart.test.ts
-
+./tests/integration/cart/cart.test.ts
+# Order ======================================================
 ./src/routes/order.routes.ts
 ./src/controllers/order.controller.ts
 ./src/services/order.service.ts
-./tests/checkout.test.ts
-./tests/orders.test.ts
+./tests/e2e/checkout.test.ts
+./tests/integration/orders/orders.test.ts
+
+./tests/helpers/auth.helper.ts

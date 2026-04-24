@@ -1,8 +1,9 @@
+// ./tests/integration/auth/auth.test.ts
 import { describe, it, expect } from "vitest";
 import request from "supertest";
-import app from "../src/app.js"; // We'll need to export app from app.ts
+import app from "../../../src/app.js";
 
-describe("Auth Endpoints", () => {
+describe("Auth Endpoints Integration", () => {
   it("should register a new user successfully", async () => {
     const res = await request(app).post("/api/auth/register").send({
       email: "test@example.com",
@@ -25,13 +26,12 @@ describe("Auth Endpoints", () => {
   });
 
   it("should login an existing user and return a token", async () => {
-    // First, ensure a user exists (or use the one from the register test)
     const credentials = { email: "login@test.com", password: "password123" };
     await request(app).post("/api/auth/register").send(credentials);
 
     const res = await request(app).post("/api/auth/login").send(credentials);
 
     expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty("token"); // We expect a JWT back
+    expect(res.body).toHaveProperty("token");
   });
 });

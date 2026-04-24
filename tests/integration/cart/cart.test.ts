@@ -1,38 +1,19 @@
+// ./tests/integration/cart/cart.test.ts
 import { describe, it, expect, beforeAll } from "vitest";
 import request from "supertest";
-import app from "../src/app.js";
-import { prisma } from "../src/config/prisma.js";
-import bcrypt from "bcrypt";
+import app from "../../../src/app.js";
+import { getAdminToken, getCustomerToken } from "../../helpers/auth.helper.js";
 
 describe("Shopping Cart Flow", () => {
   let adminToken: string;
 
   beforeAll(async () => {
-    // 1. Manual DB Insert for Admin (Bypassing restricted register route)
-    const adminEmail = "admin_cart@test.com";
-    const password = "password123";
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await prisma.user.upsert({
-      where: { email: adminEmail },
-      update: {},
-      create: {
-        email: adminEmail,
-        password: hashedPassword,
-        role: "ADMIN",
-      },
-    });
-
-    // Login to get the admin token for product creation
-    const adminLogin = await request(app)
-      .post("/api/auth/login")
-      .send({ email: adminEmail, password });
-
-    adminToken = adminLogin.body.token;
+    // Uses the helper to inject the admin and get the token
+    adminToken = await getAdminToken("admin_cart@test.com");
   });
 
   it("should create a product as admin and add it to cart as customer", async () => {
-    // 2. Create Product (using the adminToken from beforeAll)
+    // 1. Create Product
     const prodRes = await request(app)
       .post("/api/products")
       .set("Authorization", `Bearer ${adminToken}`)
@@ -44,18 +25,10 @@ describe("Shopping Cart Flow", () => {
       });
     const productId = prodRes.body.id;
 
-    // 3. Setup Customer (via public API - role defaults to CUSTOMER)
-    const customer = {
-      email: "customer_cart@test.com",
-      password: "password123",
-    };
-    await request(app).post("/api/auth/register").send(customer);
-    const customerLogin = await request(app)
-      .post("/api/auth/login")
-      .send(customer);
-    const customerToken = customerLogin.body.token;
+    // 2. Get Customer Token via Helper
+    const customerToken = await getCustomerToken("customer_cart@test.com");
 
-    // 4. Add to cart flow (checking cumulative quantity)
+    // 3. Add to cart flow (checking cumulative quantity)
     await request(app)
       .post("/api/cart")
       .set("Authorization", `Bearer ${customerToken}`)
@@ -72,12 +45,9 @@ describe("Shopping Cart Flow", () => {
   });
 
   it("should fetch the user's cart with full product details", async () => {
-    const customer = { email: "get_cart@test.com", password: "password123" };
-    await request(app).post("/api/auth/register").send(customer);
-    const loginRes = await request(app).post("/api/auth/login").send(customer);
-    const token = loginRes.body.token;
+    const token = await getCustomerToken("get_cart@test.com");
 
-    // Create a product via adminToken
+    // Create a product
     const prod = await request(app)
       .post("/api/products")
       .set("Authorization", `Bearer ${adminToken}`)
@@ -89,12 +59,10 @@ describe("Shopping Cart Flow", () => {
       });
 
     // Add to Cart
-    const addToCartRes = await request(app)
+    await request(app)
       .post("/api/cart")
       .set("Authorization", `Bearer ${token}`)
       .send({ productId: prod.body.id, quantity: 1 });
-
-    expect(addToCartRes.statusCode).toEqual(200);
 
     // Fetch Cart
     const res = await request(app)

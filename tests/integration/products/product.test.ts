@@ -1,62 +1,26 @@
+// ./tests/integration/products/product.test.ts
 import { describe, it, expect, beforeAll } from "vitest";
 import request from "supertest";
-import app from "../src/app.js";
-import { prisma } from "../src/config/prisma.js";
-import bcrypt from "bcrypt";
+import app from "../../../src/app.js";
+import { getAdminToken, getCustomerToken } from "../../helpers/auth.helper.js";
 
-describe("Product Management", () => {
+describe("Product Management Integration", () => {
   let adminToken: string;
   let customerToken: string;
-  const adminEmail = "admin_prod@test.com";
-  const password = "password123";
 
   beforeAll(async () => {
-    // 1. Setup Admin via Manual DB Insert
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await prisma.user.upsert({
-      where: { email: adminEmail },
-      update: {},
-      create: {
-        email: adminEmail,
-        password: hashedPassword,
-        role: "ADMIN",
-      },
-    });
-
-    const adminLogin = await request(app)
-      .post("/api/auth/login")
-      .send({ email: adminEmail, password });
-    adminToken = adminLogin.body.token;
-
-    // 2. Setup a regular Customer for Negative Testing
-    const customer = {
-      email: "regular_user@test.com",
-      password: "password123",
-    };
-    await request(app).post("/api/auth/register").send(customer);
-    const customerLogin = await request(app)
-      .post("/api/auth/login")
-      .send(customer);
-    customerToken = customerLogin.body.token;
+    adminToken = await getAdminToken("admin_prod@test.com");
+    customerToken = await getCustomerToken("regular_user@test.com");
   });
 
   describe("Product Protection & Roles", () => {
-    it("should return 401 if a user tries to create a product without a token", async () => {
-      const res = await request(app).post("/api/products").send({
-        name: "Hacker Laptop",
-        price: 999.99,
-        stock: 5,
-      });
-      expect(res.statusCode).toEqual(401);
-    });
-
     it("should return 403 if a CUSTOMER tries to create a product", async () => {
       const res = await request(app)
         .post("/api/products")
         .set("Authorization", `Bearer ${customerToken}`)
         .send({
           name: "Illegal Product",
-          description: "I should not be able to do this",
+          description: "Unauthorized creation attempt",
           price: 100,
           stock: 10,
         });

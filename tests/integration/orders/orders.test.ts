@@ -1,8 +1,8 @@
+// ./tests/integration/orders/orders.test.ts
 import { describe, it, expect, beforeAll } from "vitest";
 import request from "supertest";
-import app from "../src/app.js";
-import { prisma } from "../src/config/prisma.js";
-import bcrypt from "bcrypt";
+import app from "../../../src/app.js";
+import { getAdminToken, getCustomerToken } from "../../helpers/auth.helper.js";
 
 describe("Order History System", () => {
   let customerToken: string;
@@ -10,27 +10,11 @@ describe("Order History System", () => {
   let productId: string;
 
   beforeAll(async () => {
-    // 1. Manual DB Insert for Admin (Secure way to get ADMIN role)
-    const adminEmail = "admin_order@test.com";
-    const password = "password123";
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // 1. Get Tokens
+    adminToken = await getAdminToken("admin_order@test.com");
+    customerToken = await getCustomerToken("order_viewer@test.com");
 
-    await prisma.user.upsert({
-      where: { email: adminEmail },
-      update: {},
-      create: {
-        email: adminEmail,
-        password: hashedPassword,
-        role: "ADMIN",
-      },
-    });
-
-    const adminLogin = await request(app)
-      .post("/api/auth/login")
-      .send({ email: adminEmail, password });
-    adminToken = adminLogin.body.token;
-
-    // 2. Create Product via Admin Token
+    // 2. Create Product for use in these tests
     const prod = await request(app)
       .post("/api/products")
       .set("Authorization", `Bearer ${adminToken}`)
@@ -41,17 +25,6 @@ describe("Order History System", () => {
         stock: 50,
       });
     productId = prod.body.id;
-
-    // 3. Setup Customer via Public API (Role defaults to CUSTOMER)
-    const customer = {
-      email: "order_viewer@test.com",
-      password: "password123",
-    };
-    await request(app).post("/api/auth/register").send(customer);
-    const customerLogin = await request(app)
-      .post("/api/auth/login")
-      .send(customer);
-    customerToken = customerLogin.body.token;
   });
 
   it("should return an empty array if the user has no orders", async () => {
@@ -87,9 +60,7 @@ describe("Order History System", () => {
     expect(Number(order.totalAmount)).toBe(300);
     expect(order.status).toBe("COMPLETED");
 
-    // 4. Verify Snapshot Integrity (Crucial for e-commerce quality)
-    // We check that the order item has the product name from the relation
-    // and the historical price is stored correctly.
+    // 4. Verify Snapshot Integrity
     expect(order.items[0].product.name).toBe("Mechanical Keyboard");
     expect(Number(order.items[0].price)).toBe(150);
   });
