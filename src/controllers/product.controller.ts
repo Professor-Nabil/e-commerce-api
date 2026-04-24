@@ -49,3 +49,29 @@ export const getProductById = async (
     next(error);
   }
 };
+
+export const updateProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const updated = await ProductService.updateProduct(req.params.id, req.body);
+    res.json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    await ProductService.softDeleteProduct(req.params.id);
+    res.status(204).send(); // 204 No Content
+  } catch (error) {
+    next(error);
+  }
+};

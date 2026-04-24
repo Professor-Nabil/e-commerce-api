@@ -26,13 +26,18 @@ model User {
 }
 
 model Product {
-  id          String   @id @default(uuid()) // Unguessable ID
+  id          String  @id @default(uuid()) // Unguessable ID
   name        String
-  description String   @db.Text
-  price       Decimal  @db.Decimal(10, 2)
-  stock       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  description String  @db.Text
+  price       Decimal @db.Decimal(10, 2)
+  stock       Int     @default(0)
+
+  // New Fields for Soft Delete
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // A product can be in many cart items
   cartItems  CartItem[]

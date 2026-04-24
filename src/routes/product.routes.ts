@@ -3,11 +3,16 @@ import {
   getProducts,
   createProduct,
   getProductById,
+  updateProduct,
+  deleteProduct,
 } from "../controllers/product.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/role.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js"; // Import validate
-import { CreateProductSchema } from "../schemas/product.schema.js"; // Import Schema
+import {
+  CreateProductSchema,
+  UpdateProductSchema,
+} from "../schemas/product.schema.js"; // Import Schema
 
 const router = Router();
 
@@ -26,5 +31,17 @@ router.post(
   validate(CreateProductSchema),
   createProduct,
 );
+
+// Update a product
+router.patch(
+  "/:id",
+  authenticate,
+  authorize(["ADMIN"]),
+  validate(UpdateProductSchema),
+  updateProduct,
+);
+
+// Soft Delete a product
+router.delete("/:id", authenticate, authorize(["ADMIN"]), deleteProduct);
 
 export default router;
