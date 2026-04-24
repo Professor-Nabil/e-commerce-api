@@ -42,6 +42,7 @@
 ./src/schemas/cart.schema.ts
 ./tests/integration/cart/cart.test.ts
 ./tests/integration/cart/cart-management.test.ts
+./tests/integration/cart/stock-validation.test.ts
 # Order ======================================================
 ./src/routes/order.routes.ts
 ./src/controllers/order.controller.ts
@@ -50,3 +51,5 @@
 ./tests/integration/orders/orders.test.ts
 
 ./tests/helpers/auth.helper.ts
+
+./src/utils/appError.ts
