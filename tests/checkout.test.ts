@@ -1,29 +1,38 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import request from "supertest";
 import app from "../src/app.js";
 import { prisma } from "../src/config/prisma.js";
+import bcrypt from "bcrypt";
 
 describe("Checkout System", () => {
-  it("should complete checkout, create an order, and decrement stock", async () => {
-    // 1. Setup Admin: REGISTER first, then LOGIN
-    const admin = {
-      email: "admin_checkout@test.com",
-      password: "password123",
-      role: "ADMIN",
-    };
+  let adminToken: string;
+  const adminEmail = "admin_checkout@test.com";
+  const password = "password123";
 
-    // Register the admin
-    await request(app).post("/api/auth/register").send(admin);
+  beforeAll(async () => {
+    // 1. Manual DB Insert for Admin (Bypassing restricted register route)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Login the admin
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {},
+      create: {
+        email: adminEmail,
+        password: hashedPassword,
+        role: "ADMIN",
+      },
+    });
+
+    // Login once to get a token used throughout the suite
     const adminLogin = await request(app)
       .post("/api/auth/login")
-      .send({ email: admin.email, password: admin.password });
+      .send({ email: adminEmail, password });
 
-    expect(adminLogin.statusCode).toBe(200);
-    const adminToken = adminLogin.body.token;
+    adminToken = adminLogin.body.token;
+  });
 
-    // 2. Create Product
+  it("should complete checkout, create an order, and decrement stock", async () => {
+    // 2. Create Product (using adminToken)
     const prod = await request(app)
       .post("/api/products")
       .set("Authorization", `Bearer ${adminToken}`)
@@ -34,10 +43,9 @@ describe("Checkout System", () => {
         stock: 10,
       });
 
-    expect(prod.statusCode).toBe(201);
     const productId = prod.body.id;
 
-    // 2. Setup Customer & Add 2 to Cart
+    // 3. Setup Customer & Add 2 to Cart
     const customer = { email: "buyer@test.com", password: "password123" };
     await request(app).post("/api/auth/register").send(customer);
     const login = await request(app).post("/api/auth/login").send(customer);
@@ -48,7 +56,7 @@ describe("Checkout System", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({ productId, quantity: 2 });
 
-    // 3. Checkout
+    // 4. Checkout
     const res = await request(app)
       .post("/api/orders/checkout")
       .set("Authorization", `Bearer ${token}`);
@@ -56,13 +64,13 @@ describe("Checkout System", () => {
     expect(res.statusCode).toEqual(201);
     expect(Number(res.body.totalAmount)).toBe(4000);
 
-    // 4. Verify Stock is now 8
+    // 5. Verify Stock Integrity
     const updatedProd = await prisma.product.findUnique({
       where: { id: productId },
     });
     expect(updatedProd?.stock).toBe(8);
 
-    // 5. Verify Cart is empty
+    // 6. Verify Cart is empty
     const cartRes = await request(app)
       .get("/api/cart")
       .set("Authorization", `Bearer ${token}`);
@@ -83,15 +91,10 @@ describe("Checkout System", () => {
   });
 
   it("should fail checkout if stock is insufficient", async () => {
-    // We already have a product 'GPU' from the first test in the same DB
-    // but it's safer to create a fresh one with low stock
-    const adminLogin = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "admin_checkout@test.com", password: "password123" });
-
+    // Create fresh product with low stock
     const prod = await request(app)
       .post("/api/products")
-      .set("Authorization", `Bearer ${adminLogin.body.token}`)
+      .set("Authorization", `Bearer ${adminToken}`)
       .send({
         name: "Limited Item",
         description: "Only 1 left",

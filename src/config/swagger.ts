@@ -92,6 +92,7 @@ export const swaggerSpec = {
       post: {
         tags: ["Authentication"],
         summary: "Register a new user",
+        description: "Registers a new user with the default role of CUSTOMER.",
         requestBody: {
           content: {
             "application/json": {
@@ -99,15 +100,26 @@ export const swaggerSpec = {
                 type: "object",
                 required: ["email", "password"],
                 properties: {
-                  email: { type: "string" },
-                  password: { type: "string" },
-                  role: { type: "string", example: "CUSTOMER" },
+                  email: {
+                    type: "string",
+                    format: "email",
+                    example: "user@example.com",
+                  },
+                  password: {
+                    type: "string",
+                    format: "password",
+                    example: "password123",
+                  },
+                  // role is REMOVED from here because it's handled internally by the service
                 },
               },
             },
           },
         },
-        responses: { 201: { description: "User registered" } },
+        responses: {
+          201: { description: "User registered successfully as CUSTOMER" },
+          400: { description: "Email already exists or invalid input" },
+        },
       },
     },
     "/api/auth/login": {

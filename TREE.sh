@@ -10,6 +10,7 @@
 ./prisma.config.ts
 ./prisma/schema.prisma
 ./prisma/seed.ts
+./prisma/seed-first-admin.ts
 ./src/config/prisma.ts
 # Swagger ====================================================
 ./src/config/swagger.ts
