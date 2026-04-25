@@ -84,6 +84,14 @@ export const swaggerSpec = {
           },
         },
       },
+      Category: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          name: { type: "string" },
+          createdAt: { type: "string", format: "date-time" },
+        },
+      },
     },
   },
   paths: {
@@ -482,6 +490,45 @@ export const swaggerSpec = {
           200: { description: "Status updated successfully" },
           400: { description: "Invalid status provided" },
           404: { description: "Order not found" },
+        },
+      },
+    },
+    "/api/categories": {
+      get: {
+        tags: ["Categories"],
+        summary: "Get all categories",
+        responses: {
+          200: {
+            description: "List of categories",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Category" },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        tags: ["Categories"],
+        security: [{ bearerAuth: [] }],
+        summary: "Create a new category (Admin only)",
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["name"],
+                properties: { name: { type: "string" } },
+              },
+            },
+          },
+        },
+        responses: {
+          201: { description: "Category created" },
+          403: { description: "Admin only" },
         },
       },
     },

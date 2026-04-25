@@ -39,6 +39,9 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Many-to-many relationship
+  categories Category[]
+
   // A product can be in many cart items
   cartItems  CartItem[]
   orderItems OrderItem[]
@@ -94,4 +97,12 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Decimal @db.Decimal(10, 2) // Storing price at time of purchase
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

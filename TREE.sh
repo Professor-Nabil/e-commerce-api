@@ -50,6 +50,14 @@
 ./tests/e2e/checkout.test.ts
 ./tests/integration/orders/orders.test.ts
 
+# Category ===================================================
+./src/routes/category.routes.ts
+./src/controllers/category.controller.ts
+./src/services/category.service.ts
+./tests/integration/products/categories.test.ts
+
+# More =======================================================
+
 ./tests/helpers/auth.helper.ts
 
 ./src/utils/appError.ts

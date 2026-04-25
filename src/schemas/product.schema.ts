@@ -8,6 +8,7 @@ export const CreateProductSchema = z.object({
       .min(10, "Description must be at least 10 characters"),
     price: z.coerce.number().positive(),
     stock: z.coerce.number().int().nonnegative(),
+    categoryNames: z.array(z.string()).optional(), // Change from IDs to strings
   }),
 });
 

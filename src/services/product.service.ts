@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client"; // Import the Prisma namespace
 export const getAllProducts = async () => {
   return await prisma.product.findMany({
     where: { isDeleted: false }, // Only show active products
+    include: { categories: true }, // Add this to see category info
     orderBy: { createdAt: "desc" },
   });
 };
@@ -28,9 +29,31 @@ export const softDeleteProduct = async (id: string) => {
   });
 };
 
-export const createProduct = async (data: Prisma.ProductCreateInput) => {
+// Old Code:
+// export const createProduct = async (data: Prisma.ProductCreateInput) => {
+//   return await prisma.product.create({
+//     data,
+//   });
+// };
+// New Code:
+export const createProduct = async (data: any) => {
+  const { categoryNames, ...productData } = data;
+
   return await prisma.product.create({
-    data,
+    data: {
+      ...productData,
+      categories: {
+        // This maps through your strings and tells Prisma:
+        // "Find this by name, or create it if it's missing"
+        connectOrCreate: categoryNames?.map((name: string) => ({
+          where: { name },
+          create: { name },
+        })),
+      },
+    },
+    include: {
+      categories: true,
+    },
   });
 };
 

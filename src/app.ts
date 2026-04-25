@@ -6,6 +6,7 @@ import productRoutes from "./routes/product.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 
 const app = express();
@@ -24,7 +25,8 @@ app.get("/", (_req, res) => {
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/products", productRoutes);
-app.use("/api/auth", authRoutes); // Add this!
+app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
