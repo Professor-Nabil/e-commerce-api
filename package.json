@@ -11,7 +11,7 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "test": "NODE_ENV=test vitest run",
-    "tree": "tree -I node_modules -I .git -I dist -a"
+    "tree": "clear; tree -I node_modules -I .git -I dist -I TREE.sh -a"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.x",

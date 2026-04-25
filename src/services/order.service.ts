@@ -1,5 +1,6 @@
 import { prisma } from "../config/prisma.js";
 import { AppError } from "../utils/appError.js";
+import { OrderStatus } from "@prisma/client"; // Import the generated Enum
 
 export const checkout = async (userId: string) => {
   return await prisma.$transaction(async (tx) => {
@@ -71,5 +72,43 @@ export const getOrderHistory = async (userId: string) => {
       },
     },
     orderBy: { createdAt: "desc" }, // Newest orders first
+  });
+};
+
+export const getAllOrders = async () => {
+  return await prisma.order.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          // name: true,
+        },
+      },
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+/**
+ * Updates an order status.
+ * Note: status must be one of: 'PENDING', 'COMPLETED', 'CANCELLED'
+ */
+export const updateOrderStatus = async (
+  orderId: string,
+  status: OrderStatus,
+) => {
+  // Check if order exists first to provide a better error message
+  const order = await prisma.order.findUnique({ where: { id: orderId } });
+  if (!order) throw new AppError("Order not found", 404);
+
+  return await prisma.order.update({
+    where: { id: orderId },
+    data: { status },
   });
 };

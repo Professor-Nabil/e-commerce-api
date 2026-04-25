@@ -422,5 +422,68 @@ export const swaggerSpec = {
         },
       },
     },
+    // ADMIN ORDER ENDPOINTS
+    "/api/orders/admin": {
+      get: {
+        tags: ["Admin"],
+        security: [{ bearerAuth: [] }],
+        summary: "Get all user orders (Admin only)",
+        responses: {
+          200: {
+            description: "List of all orders in the system",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Order" },
+                },
+              },
+            },
+          },
+          403: { description: "Forbidden - Admin role required" },
+        },
+      },
+    },
+    "/api/orders/{id}/status": {
+      patch: {
+        tags: ["Admin"],
+        security: [{ bearerAuth: [] }],
+        summary: "Update order status (Admin only)",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  status: {
+                    type: "string",
+                    enum: [
+                      "PENDING",
+                      "COMPLETED",
+                      "SHIPPED",
+                      "DELIVERED",
+                      "CANCELLED",
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Status updated successfully" },
+          400: { description: "Invalid status provided" },
+          404: { description: "Order not found" },
+        },
+      },
+    },
   },
 };
