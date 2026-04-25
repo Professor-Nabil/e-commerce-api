@@ -45,6 +45,8 @@ model Product {
   // A product can be in many cart items
   cartItems  CartItem[]
   orderItems OrderItem[]
+
+  images ProductImage[] // Better for future-proofing
 }
 
 model Cart {
@@ -105,4 +107,12 @@ model Category {
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  url       String // This will store "public/uploads/filename.jpg"
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }

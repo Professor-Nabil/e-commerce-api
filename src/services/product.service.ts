@@ -36,23 +36,26 @@ export const softDeleteProduct = async (id: string) => {
 //   });
 // };
 // New Code:
-export const createProduct = async (data: any) => {
+export const createProduct = async (data: any, filePaths: string[] = []) => {
   const { categoryNames, ...productData } = data;
 
   return await prisma.product.create({
     data: {
       ...productData,
       categories: {
-        // This maps through your strings and tells Prisma:
-        // "Find this by name, or create it if it's missing"
         connectOrCreate: categoryNames?.map((name: string) => ({
           where: { name },
           create: { name },
         })),
       },
+      // Link the uploaded file paths here
+      images: {
+        create: filePaths.map((path) => ({ url: path })),
+      },
     },
     include: {
       categories: true,
+      images: true,
     },
   });
 };

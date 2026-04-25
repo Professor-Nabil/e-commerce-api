@@ -61,3 +61,6 @@
 ./tests/helpers/auth.helper.ts
 
 ./src/utils/appError.ts
+
+./public/uploads/
+./src/config/multer.ts

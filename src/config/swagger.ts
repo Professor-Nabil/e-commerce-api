@@ -45,6 +45,15 @@ export const swaggerSpec = {
           description: { type: "string" },
           price: { type: "number" },
           stock: { type: "integer" },
+          images: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                url: { type: "string" },
+              },
+            },
+          },
         },
       },
       // --- CART SCHEMAS ---
@@ -181,11 +190,12 @@ export const swaggerSpec = {
       post: {
         tags: ["Products"],
         security: [{ bearerAuth: [] }],
-        summary: "Create a new product (Admin only)",
+        summary: "Create a new product with images (Admin only)",
         requestBody: {
           required: true,
           content: {
-            "application/json": {
+            "multipart/form-data": {
+              // Changed from application/json
               schema: {
                 type: "object",
                 required: ["name", "price", "stock"],
@@ -194,6 +204,18 @@ export const swaggerSpec = {
                   description: { type: "string" },
                   price: { type: "number" },
                   stock: { type: "integer" },
+                  categoryNames: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "Array of category names",
+                  },
+                  images: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                      format: "binary", // This tells Swagger to show a file upload button
+                    },
+                  },
                 },
               },
             },

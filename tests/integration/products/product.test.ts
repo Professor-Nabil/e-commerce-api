@@ -91,4 +91,18 @@ describe("Product Management Integration", () => {
       expect(res.statusCode).toEqual(404);
     });
   });
+
+  it("should create a product with an image", async () => {
+    const response = await request(app)
+      .post("/api/products")
+      .set("Authorization", `Bearer ${adminToken}`)
+      .field("name", "Test Product") // Use .field for text
+      .field("description", "A valid description for testing")
+      .field("price", 99.99)
+      .field("stock", 10)
+      .attach("images", "tests/fixtures/test-image.png"); // Path to a small test image
+
+    expect(response.status).toBe(201);
+    expect(response.body.images).toHaveLength(1);
+  });
 });

@@ -18,13 +18,44 @@ export const getProducts = async (
   }
 };
 
+// export const createProduct = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+//   try {
+//     const product = await ProductService.createProduct(req.body);
+//     res.status(201).json(product);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 export const createProduct = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const product = await ProductService.createProduct(req.body);
+    // 1. Extract files from Multer (req.files)
+    const files = req.files as Express.Multer.File[];
+    const filePaths = files?.map((file) => file.path) || [];
+
+    // 2. Prepare the data (Coerce strings to numbers for Prisma)
+    const productData = {
+      ...req.body,
+      price: parseFloat(req.body.price),
+      stock: parseInt(req.body.stock, 10),
+      // Handle categoryNames if sent as form fields
+      categoryNames: Array.isArray(req.body.categoryNames)
+        ? req.body.categoryNames
+        : req.body.categoryNames
+          ? [req.body.categoryNames]
+          : [],
+    };
+
+    // 3. Pass both to the service
+    const product = await ProductService.createProduct(productData, filePaths);
+
     res.status(201).json(product);
   } catch (error) {
     next(error);

@@ -13,6 +13,7 @@ import {
   CreateProductSchema,
   UpdateProductSchema,
 } from "../schemas/product.schema.js"; // Import Schema
+import { upload } from "../config/multer.js";
 
 const router = Router();
 
@@ -24,11 +25,19 @@ router.get("/:id", getProductById);
 
 // Private: Only Admins can add products
 // router.post("/", authenticate, authorize(["ADMIN"]), createProduct);
+// router.post(
+//   "/",
+//   authenticate,
+//   authorize(["ADMIN"]),
+//   validate(CreateProductSchema),
+//   createProduct,
+// );
 router.post(
   "/",
   authenticate,
   authorize(["ADMIN"]),
-  validate(CreateProductSchema),
+  upload.array("images", 5), // 'images' is the field name, max 5 files
+  validate(CreateProductSchema), // Note: You might need to adjust validation!
   createProduct,
 );
 
