@@ -1,0 +1,1 @@
+- feat: support multipart/form-data for product updates and images
