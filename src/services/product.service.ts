@@ -4,18 +4,43 @@ import { Prisma } from "@prisma/client"; // Import the Prisma namespace
 export const getAllProducts = async () => {
   return await prisma.product.findMany({
     where: { isDeleted: false }, // Only show active products
-    include: { categories: true }, // Add this to see category info
+    include: {
+      categories: true,
+      images: true,
+    },
     orderBy: { createdAt: "desc" },
   });
 };
 
+// export const updateProduct = async (
+//   id: string,
+//   data: Prisma.ProductUpdateInput,
+// ) => {
+//   return await prisma.product.update({
+//     where: { id },
+//     data,
+//   });
+// };
 export const updateProduct = async (
   id: string,
-  data: Prisma.ProductUpdateInput,
+  data: any,
+  filePaths: string[] = [],
 ) => {
+  const { categoryNames, ...productData } = data;
+
   return await prisma.product.update({
     where: { id },
-    data,
+    data: {
+      ...productData,
+      // If new files are uploaded, we append them
+      images: {
+        create: filePaths.map((path) => ({ url: path })),
+      },
+    },
+    include: {
+      categories: true,
+      images: true,
+    },
   });
 };
 
@@ -63,5 +88,9 @@ export const createProduct = async (data: any, filePaths: string[] = []) => {
 export const getProductById = async (id: string) => {
   return await prisma.product.findUnique({
     where: { id },
+    include: {
+      categories: true,
+      images: true,
+    },
   });
 };

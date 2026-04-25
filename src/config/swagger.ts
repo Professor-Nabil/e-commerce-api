@@ -261,13 +261,10 @@ export const swaggerSpec = {
           404: { description: "Product not found" },
         },
       },
-      // ... inside "/api/products/{id}" block ...
       patch: {
         tags: ["Products"],
         security: [{ bearerAuth: [] }],
         summary: "Update an existing product (Admin only)",
-        description:
-          "Allows partial updates. Only provided fields will be updated.",
         parameters: [
           {
             name: "id",
@@ -278,7 +275,8 @@ export const swaggerSpec = {
         ],
         requestBody: {
           content: {
-            "application/json": {
+            "multipart/form-data": {
+              // Update content type
               schema: {
                 type: "object",
                 properties: {
@@ -286,17 +284,18 @@ export const swaggerSpec = {
                   description: { type: "string" },
                   price: { type: "number" },
                   stock: { type: "integer" },
+                  categoryNames: {
+                    type: "array",
+                    items: { type: "string" },
+                  },
+                  images: {
+                    type: "array",
+                    items: { type: "string", format: "binary" },
+                  },
                 },
               },
             },
           },
-        },
-        responses: {
-          200: { description: "Product updated successfully" },
-          400: { description: "Validation error" },
-          401: { description: "Unauthorized" },
-          403: { description: "Forbidden - Admin only" },
-          404: { description: "Product not found" },
         },
       },
       delete: {

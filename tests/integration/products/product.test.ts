@@ -7,6 +7,7 @@ import { getAdminToken, getCustomerToken } from "../../helpers/auth.helper.js";
 describe("Product Management Integration", () => {
   let adminToken: string;
   let customerToken: string;
+  let targetProductId: string; // 👈 Define it here for the whole suite
 
   beforeAll(async () => {
     adminToken = await getAdminToken("admin_prod@test.com");
@@ -104,5 +105,53 @@ describe("Product Management Integration", () => {
 
     expect(response.status).toBe(201);
     expect(response.body.images).toHaveLength(1);
+  });
+
+  describe("POST /api/products (Creation)", () => {
+    it("should create a product with an image", async () => {
+      const response = await request(app)
+        .post("/api/products")
+        .set("Authorization", `Bearer ${adminToken}`)
+        .field("name", "Test Product")
+        .field("description", "A valid description for testing")
+        .field("price", 99.99)
+        .field("stock", 10)
+        .attach("images", "tests/fixtures/test-image.png");
+
+      expect(response.status).toBe(201);
+      expect(response.body.images).toHaveLength(1);
+
+      // 👈 Save this ID for the PATCH tests below
+      targetProductId = response.body.id;
+    });
+  });
+
+  describe("PATCH /api/products/:id (Multipart Update)", () => {
+    it("should update product price and add an image via multipart/form-data", async () => {
+      const res = await request(app)
+        .patch(`/api/products/${targetProductId}`)
+        .set("Authorization", `Bearer ${adminToken}`)
+        .field("price", "199.99") // Sent as string, coerced by controller
+        .attach("images", "tests/fixtures/test-image.png");
+
+      expect(res.statusCode).toBe(200);
+      expect(Number(res.body.price)).toBe(199.99);
+      // Check that the new image was added to the array
+      expect(res.body.images).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ url: expect.stringContaining("uploads/") }),
+        ]),
+      );
+    });
+
+    it("should handle partial updates without files", async () => {
+      const res = await request(app)
+        .patch(`/api/products/${targetProductId}`)
+        .set("Authorization", `Bearer ${adminToken}`)
+        .field("stock", "50");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.stock).toBe(50);
+    });
   });
 });

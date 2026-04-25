@@ -81,13 +81,50 @@ export const getProductById = async (
   }
 };
 
+// export const updateProduct = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+//   try {
+//     const updated = await ProductService.updateProduct(req.params.id, req.body);
+//     res.json(updated);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 export const updateProduct = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const updated = await ProductService.updateProduct(req.params.id, req.body);
+    // 1. Extract files from Multer
+    const files = req.files as Express.Multer.File[];
+    const filePaths = files?.map((file) => file.path) || [];
+
+    // 2. Prepare the data (Handle partial updates)
+    const updateData = {
+      ...req.body,
+      // Only parse if the value exists in the request body
+      ...(req.body.price && { price: parseFloat(req.body.price) }),
+      ...(req.body.stock && { stock: parseInt(req.body.stock, 10) }),
+
+      // Handle categoryNames logic
+      ...(req.body.categoryNames && {
+        categoryNames: Array.isArray(req.body.categoryNames)
+          ? req.body.categoryNames
+          : [req.body.categoryNames],
+      }),
+    };
+
+    // 3. Pass ID, data, and new images to service
+    const updated = await ProductService.updateProduct(
+      req.params.id,
+      updateData,
+      filePaths,
+    );
+
     res.json(updated);
   } catch (error) {
     next(error);
