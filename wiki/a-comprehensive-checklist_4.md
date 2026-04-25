@@ -8,7 +8,7 @@
   - [x] **Update existing product** (Price, description, stock) — _Done in previous session_
   - [x] **Soft Delete** product (Archive system) — _Done in previous session_
   - [x] Manage Categories (Linking products to specific tags)
-  - [ ] Upload Product Images (Cloudinary/S3 integration)
+  - [x] Upload Product Images (Cloudinary/S3 integration)
 - **Order Management**
   - [x] View **all** orders from **all** users (Global Audit) — **[NEWLY DONE]**
   - [x] Update Order Status (`PENDING` → `SHIPPED` → `DELIVERED`) — **[NEWLY DONE]**
