@@ -13,14 +13,14 @@
   - [x] View **all** orders from **all** users (Global Audit) — **[NEWLY DONE]**
   - [x] Update Order Status (`PENDING` → `SHIPPED` → `DELIVERED`) — **[NEWLY DONE]**
 - **User Management**
-  - [ ] View all registered users
-  - [ ] Ban/Deactivate a user account
+  - [x] View all registered users
+  - [x] Ban/Deactivate a user account
 
 ## 📊 Updated Big Picture (Security Edition)
 
 - [x] **Secure Registration**: Hardcoded `CUSTOMER` role.
 - [x] **Admin Seeding**: Manual script to create the first admin (`seed-first-admin.ts` exists).
-- [ ] **Admin Promotion**: `PATCH /api/users/:id/role` (Protected endpoint for Admins only).
+- [x] **Admin Promotion**: `PATCH /api/users/:id/role` (Protected endpoint for Admins only).
 
 ## 👤 User (The Customer Experience)
 
