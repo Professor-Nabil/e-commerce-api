@@ -107,6 +107,7 @@ export const swaggerSpec = {
           id: { type: "string", format: "uuid" },
           email: { type: "string", format: "email" },
           role: { type: "string", enum: ["ADMIN", "CUSTOMER"] },
+          status: { type: "string", enum: ["ACTIVE", "BANNED"] },
           createdAt: { type: "string", format: "date-time" },
         },
       },
@@ -605,6 +606,58 @@ export const swaggerSpec = {
             },
           },
           403: { description: "Forbidden - Admin access required" },
+        },
+      },
+    },
+    "/api/users/{id}/status": {
+      patch: {
+        tags: ["User Management"],
+        security: [{ bearerAuth: [] }],
+        summary: "Ban or Deactivate a user account (Admin only)",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+            description: "The ID of the user to update",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["status"],
+                properties: {
+                  status: {
+                    type: "string",
+                    enum: ["ACTIVE", "BANNED"],
+                    description: "The new status for the account",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "User status updated successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    message: { type: "string" },
+                    user: { $ref: "#/components/schemas/User" },
+                  },
+                },
+              },
+            },
+          },
+          403: { description: "Forbidden - Admin access required" },
+          404: { description: "User not found" },
         },
       },
     },
