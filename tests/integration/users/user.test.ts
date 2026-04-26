@@ -113,4 +113,13 @@ describe("User Management Integration (Admin)", () => {
 
     expect(accessRes.statusCode).toBe(200);
   });
+  it("should allow a SUPER_ADMIN to create another SUPER_ADMIN", async () => {
+    const res = await request(app)
+      .patch(`/api/users/${targetUserId}/role`)
+      .set("Authorization", `Bearer ${superAdminToken}`)
+      .send({ role: "SUPER_ADMIN" });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.user.role).toBe("SUPER_ADMIN");
+  });
 });

@@ -42,7 +42,7 @@ export const updateUserStatus = async (
 
 export const updateUserRole = async (
   id: string,
-  role: "ADMIN" | "CUSTOMER",
+  role: "ADMIN" | "CUSTOMER" | "SUPER_ADMIN",
 ) => {
   return await prisma.user.update({
     where: { id },

@@ -675,15 +675,17 @@ export const swaggerSpec = {
             schema: { type: "string", format: "uuid" },
           },
         ],
+        // Inside the /api/users/{id}/role path definition
         requestBody: {
-          required: true,
           content: {
             "application/json": {
               schema: {
                 type: "object",
-                required: ["role"],
                 properties: {
-                  role: { type: "string", enum: ["ADMIN", "CUSTOMER"] },
+                  role: {
+                    type: "string",
+                    enum: ["CUSTOMER", "ADMIN", "SUPER_ADMIN"],
+                  },
                 },
               },
             },
