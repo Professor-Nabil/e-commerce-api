@@ -7,17 +7,18 @@ import app from "../../src/app.js";
 export const getAdminToken = async (
   email = "admin@test.com",
   password = "password123",
+  role: "ADMIN" | "SUPER_ADMIN" = "ADMIN",
 ) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // 1. Ensure Admin exists in DB
   await prisma.user.upsert({
     where: { email },
-    update: {},
+    update: { role },
     create: {
       email,
       password: hashedPassword,
-      role: "ADMIN",
+      role,
     },
   });
 
