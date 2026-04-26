@@ -35,3 +35,28 @@ export const toggleUserBan = async (
     next(error);
   }
 };
+
+export const changeUserRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body; // Expecting { "role": "ADMIN" }
+
+    if (!["ADMIN", "CUSTOMER"].includes(role)) {
+      return res
+        .status(400)
+        .json({ error: { message: "Invalid role provided" } });
+    }
+
+    const updatedUser = await UserService.updateUserRole(id, role);
+    res.json({
+      message: `User role updated to ${role}`,
+      user: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

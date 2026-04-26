@@ -67,4 +67,36 @@ describe("User Management Integration (Admin)", () => {
     expect(loginRes.statusCode).toBe(403);
     expect(loginRes.body.error.message).toMatch(/deactivated|banned/i);
   });
+
+  it("should allow an ADMIN to promote a CUSTOMER and the new ADMIN can then access admin routes", async () => {
+    // 1. Unban the user first (since the previous test banned them)
+    await request(app)
+      .patch(`/api/users/${targetUserId}/status`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ status: "ACTIVE" });
+
+    // 2. Admin promotes the Customer to ADMIN
+    const promoRes = await request(app)
+      .patch(`/api/users/${targetUserId}/role`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ role: "ADMIN" });
+
+    expect(promoRes.statusCode).toBe(200);
+    expect(promoRes.body.user.role).toBe("ADMIN");
+
+    // 3. The user MUST re-login to get a new JWT with the ADMIN role
+    const loginRes = await request(app).post("/api/auth/login").send({
+      email: "regular_user_mgmt@test.com",
+      password: "password123",
+    });
+
+    const newAdminToken = loginRes.body.token;
+
+    // 4. Verify the new token now allows access to the user list (Admin only)
+    const accessRes = await request(app)
+      .get("/api/users")
+      .set("Authorization", `Bearer ${newAdminToken}`);
+
+    expect(accessRes.statusCode).toBe(200);
+  });
 });

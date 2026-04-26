@@ -661,5 +661,39 @@ export const swaggerSpec = {
         },
       },
     },
+    "/api/users/{id}/role": {
+      patch: {
+        tags: ["User Management"],
+        security: [{ bearerAuth: [] }],
+        summary: "Change user role (Admin only)",
+        description: "Promote a user to ADMIN or demote to CUSTOMER.",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["role"],
+                properties: {
+                  role: { type: "string", enum: ["ADMIN", "CUSTOMER"] },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Role updated successfully" },
+          403: { description: "Forbidden - Admin only" },
+        },
+      },
+    },
   },
 };
