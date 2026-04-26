@@ -1,0 +1,1 @@
+- docs: add user status toggle to swagger and update user schema

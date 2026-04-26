@@ -1,0 +1,1 @@
+- feat: add user deactivation (ban) logic and integration tests

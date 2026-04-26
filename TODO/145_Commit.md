@@ -1,0 +1,1 @@
+- feat: allow super_admin to promote users to super_admin role

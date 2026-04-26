@@ -1,0 +1,1 @@
+- feat: implement user promotion and verify role escalation in tests

@@ -1,0 +1,1 @@
+- feat: implement safety checks to prevent demoting or banning the last super admin
