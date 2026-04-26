@@ -56,6 +56,12 @@
 ./src/services/category.service.ts
 ./tests/integration/products/categories.test.ts
 
+# User =======================================================
+./src/routes/user.routes.ts
+./src/controllers/user.controller.ts
+./src/services/user.service.ts
+./tests/integration/users/user.test.ts
+
 # More =======================================================
 
 ./tests/helpers/auth.helper.ts

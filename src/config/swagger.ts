@@ -101,6 +101,15 @@ export const swaggerSpec = {
           createdAt: { type: "string", format: "date-time" },
         },
       },
+      User: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          email: { type: "string", format: "email" },
+          role: { type: "string", enum: ["ADMIN", "CUSTOMER"] },
+          createdAt: { type: "string", format: "date-time" },
+        },
+      },
     },
   },
   paths: {
@@ -550,6 +559,52 @@ export const swaggerSpec = {
         responses: {
           201: { description: "Category created" },
           403: { description: "Admin only" },
+        },
+      },
+    },
+    "/api/users": {
+      get: {
+        tags: ["User Management"],
+        security: [{ bearerAuth: [] }],
+        summary: "Get all registered users (Admin only)",
+        parameters: [
+          {
+            name: "page",
+            in: "query",
+            schema: { type: "integer", default: 1 },
+          },
+          {
+            name: "limit",
+            in: "query",
+            schema: { type: "integer", default: 10 },
+          },
+        ],
+        responses: {
+          200: {
+            description: "List of users with pagination info",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    users: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/User" },
+                    },
+                    pagination: {
+                      type: "object",
+                      properties: {
+                        total: { type: "integer" },
+                        page: { type: "integer" },
+                        pages: { type: "integer" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: { description: "Forbidden - Admin access required" },
         },
       },
     },
