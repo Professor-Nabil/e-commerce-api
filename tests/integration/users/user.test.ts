@@ -3,6 +3,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import request from "supertest";
 import app from "../../../src/app.js";
 import { getAdminToken, getCustomerToken } from "../../helpers/auth.helper.js";
+import { prisma } from "../../../src/config/prisma.js";
 
 describe("User Management Integration (Admin)", () => {
   let superAdminToken: string;
@@ -121,5 +122,31 @@ describe("User Management Integration (Admin)", () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body.user.role).toBe("SUPER_ADMIN");
+  });
+
+  it("should NOT allow demoting the last SUPER_ADMIN", async () => {
+    // 1. First, demote the 'extra' Super Admin we created in the previous test
+    // so that only one remains in the DB.
+    await request(app)
+      .patch(`/api/users/${targetUserId}/role`)
+      .set("Authorization", `Bearer ${superAdminToken}`)
+      .send({ role: "CUSTOMER" });
+
+    // 2. Now find the absolute last Super Admin (the one used for the token)
+    const lastSuperAdmin = await prisma.user.findFirst({
+      where: { role: "SUPER_ADMIN" },
+    });
+
+    // 3. Try to demote the last one
+    const res = await request(app)
+      .patch(`/api/users/${lastSuperAdmin?.id}/role`)
+      .set("Authorization", `Bearer ${superAdminToken}`)
+      .send({ role: "CUSTOMER" });
+
+    // 4. This should now correctly return 400
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error.message).toMatch(
+      /At least one Super Admin must exist/i,
+    );
   });
 });
