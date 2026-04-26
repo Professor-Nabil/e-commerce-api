@@ -12,13 +12,19 @@ enum Role {
   ADMIN
 }
 
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
 model User {
-  id        String   @id @default(uuid()) // Unguessable ID
-  email     String   @unique
+  id        String     @id @default(uuid()) // Unguessable ID
+  email     String     @unique
   password  String
-  role      Role     @default(CUSTOMER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      Role       @default(CUSTOMER)
+  status    UserStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   // A user has one cart
   cart   Cart?

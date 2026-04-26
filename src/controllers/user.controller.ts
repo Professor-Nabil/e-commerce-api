@@ -16,3 +16,22 @@ export const getUsers = async (
     next(error);
   }
 };
+
+export const toggleUserBan = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body; // Expecting { "status": "BANNED" }
+
+    const updatedUser = await UserService.updateUserStatus(id, status);
+    res.json({
+      message: `User status updated to ${status}`,
+      user: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

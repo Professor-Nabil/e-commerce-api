@@ -1,6 +1,7 @@
 import { prisma } from "../config/prisma.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { AppError } from "../utils/appError.js";
 
 export const registerUser = async (userData: any) => {
   // 1. Hash the password
@@ -30,6 +31,13 @@ export const loginUser = async (credentials: any) => {
   });
 
   if (!user) throw new Error("Invalid credentials");
+  // Inside your login/verify logic
+  if (user.status === "BANNED") {
+    throw new AppError(
+      "Your account has been deactivated. Please contact support.",
+      403,
+    );
+  }
 
   const isPasswordValid = await bcrypt.compare(
     credentials.password,

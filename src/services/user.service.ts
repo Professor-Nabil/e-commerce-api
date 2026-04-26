@@ -28,3 +28,14 @@ export const getAllUsers = async (page = 1, limit = 10) => {
     },
   };
 };
+
+export const updateUserStatus = async (
+  id: string,
+  status: "ACTIVE" | "BANNED",
+) => {
+  return await prisma.user.update({
+    where: { id },
+    data: { status },
+    select: { id: true, email: true, status: true },
+  });
+};

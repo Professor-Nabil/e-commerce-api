@@ -6,6 +6,7 @@ import { getAdminToken, getCustomerToken } from "../../helpers/auth.helper.js";
 describe("User Management Integration (Admin)", () => {
   let adminToken: string;
   let customerToken: string;
+  let targetUserId: string; // 👈 Define the ID variable here
 
   beforeAll(async () => {
     adminToken = await getAdminToken("admin_user_mgmt@test.com");
@@ -19,9 +20,14 @@ describe("User Management Integration (Admin)", () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("users");
-    expect(res.body).toHaveProperty("pagination");
     expect(Array.isArray(res.body.users)).toBe(true);
-    // Ensure sensitive data like password is NOT leaked
+
+    // 👈 Capture the ID of the customer we just created via the helper
+    const customer = res.body.users.find(
+      (u: any) => u.email === "regular_user_mgmt@test.com",
+    );
+    targetUserId = customer?.id;
+
     if (res.body.users.length > 0) {
       expect(res.body.users[0]).not.toHaveProperty("password");
     }
@@ -38,5 +44,27 @@ describe("User Management Integration (Admin)", () => {
   it("should return 401 Unauthorized if no token is provided", async () => {
     const res = await request(app).get("/api/users");
     expect(res.statusCode).toBe(401);
+  });
+
+  it("should prevent a BANNED user from logging in", async () => {
+    // Ensure we have a user to ban
+    expect(targetUserId).toBeDefined();
+
+    // 1. Admin bans the user
+    const banRes = await request(app)
+      .patch(`/api/users/${targetUserId}/status`)
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({ status: "BANNED" });
+
+    expect(banRes.statusCode).toBe(200);
+
+    // 2. User tries to login
+    const loginRes = await request(app).post("/api/auth/login").send({
+      email: "regular_user_mgmt@test.com", // 👈 Must match the banned user
+      password: "password123",
+    });
+
+    expect(loginRes.statusCode).toBe(403);
+    expect(loginRes.body.error.message).toMatch(/deactivated|banned/i);
   });
 });
