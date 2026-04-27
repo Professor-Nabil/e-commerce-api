@@ -26,7 +26,7 @@
 
 - **Auth & Profile**
   - [x] Register & Login (JWT)
-  - [ ] Update Profile (Shipping Address, Name)
+  - [x] Update Profile (Shipping Address, Name)
   - [ ] Password Reset flow
 - **Cart & Checkout**
   - [x] View current cart
