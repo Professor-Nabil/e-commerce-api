@@ -60,7 +60,9 @@
 ./src/routes/user.routes.ts
 ./src/controllers/user.controller.ts
 ./src/services/user.service.ts
+./src/schemas/user.schema.ts
 ./tests/integration/users/user.test.ts
+./tests/integration/users/profile.test.ts
 
 # More =======================================================
 

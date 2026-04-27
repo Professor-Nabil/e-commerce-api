@@ -178,6 +178,43 @@ export const swaggerSpec = {
         },
       },
     },
+    // Inside paths object
+    "/api/users/me/profile": {
+      get: {
+        tags: ["Profile"],
+        security: [{ bearerAuth: [] }],
+        summary: "Get current user's profile",
+        responses: {
+          200: { description: "Profile retrieved successfully" },
+          401: { description: "Unauthorized" },
+        },
+      },
+      patch: {
+        tags: ["Profile"],
+        security: [{ bearerAuth: [] }],
+        summary: "Update current user's profile",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  firstName: { type: "string" },
+                  lastName: { type: "string" },
+                  phone: { type: "string" },
+                  shippingAddress: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Profile updated successfully" },
+          400: { description: "Validation error" },
+        },
+      },
+    },
     // PRODUCT ENDPOINTS
     "/api/products": {
       get: {

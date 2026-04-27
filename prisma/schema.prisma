@@ -27,9 +27,24 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  // A user has one cart
-  cart   Cart?
-  orders Order[]
+  // Relationships
+  profile Profile?
+  cart    Cart?
+  orders  Order[]
+}
+
+model Profile {
+  id              String  @id @default(uuid())
+  firstName       String?
+  lastName        String?
+  phone           String?
+  shippingAddress String? @db.Text
+
+  // Link back to User
+  userId String @unique // 👈 Unique constraint for 1-to-1
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  updatedAt DateTime @updatedAt
 }
 
 model Product {

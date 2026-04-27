@@ -13,6 +13,8 @@ describe("Auth Endpoints Integration", () => {
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty("id");
     expect(res.body.email).toBe("test@example.com");
+    expect(res.body).toHaveProperty("profile");
+    expect(res.body.profile.firstName).toBeNull(); // Should be null initially
   });
 
   it("should return 400 if email is invalid", async () => {

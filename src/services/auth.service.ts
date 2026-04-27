@@ -4,23 +4,25 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../utils/appError.js";
 
 export const registerUser = async (userData: any) => {
-  // 1. Hash the password
   const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-  // 2. Save to MariaDB
   return await prisma.user.create({
     data: {
       email: userData.email,
       password: hashedPassword,
-      // role: userData.role || "CUSTOMER", // Use the role if provided, else default
-      role: "CUSTOMER", // 👈 This overrides anything the user tries to send
+      role: "CUSTOMER",
+      // 🛡️ Create the empty profile linked to this user automatically
+      profile: {
+        create: {},
+      },
     },
     select: {
-      // Don't return the password to the user!
       id: true,
       email: true,
       role: true,
       createdAt: true,
+      // We can also return the empty profile object if we want
+      profile: true,
     },
   });
 };

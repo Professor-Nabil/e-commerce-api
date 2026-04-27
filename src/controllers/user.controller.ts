@@ -68,3 +68,44 @@ export const changeUserRole = async (
     next(error);
   }
 };
+
+export const getMyProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    // 🛡️ Guard clause to satisfy TS
+    if (!req.user) {
+      return res.status(401).json({ error: { message: "Unauthorized" } });
+    }
+
+    const profile = await UserService.getUserProfile(req.user.id);
+    res.json(profile);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateMyProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: { message: "Unauthorized" } });
+    }
+
+    const updatedProfile = await UserService.updateUserProfile(
+      req.user.id,
+      req.body,
+    );
+    res.json({
+      message: "Profile updated successfully",
+      profile: updatedProfile,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

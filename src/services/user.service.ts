@@ -88,3 +88,16 @@ export const updateUserRole = async (
     },
   });
 };
+
+export const getUserProfile = async (userId: string) => {
+  return await prisma.profile.findUnique({
+    where: { userId },
+  });
+};
+
+export const updateUserProfile = async (userId: string, data: any) => {
+  return await prisma.profile.update({
+    where: { userId },
+    data,
+  });
+};
