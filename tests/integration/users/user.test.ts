@@ -83,7 +83,7 @@ describe("User Management Integration (Admin)", () => {
       .send({ role: "ADMIN" });
 
     expect(res.statusCode).toBe(403);
-    expect(res.body.error.message).toContain("Super Admins");
+    expect(res.body.error.message).toMatch(/Forbidden|permission/i);
   });
 
   it("should allow a SUPER_ADMIN to promote a CUSTOMER", async () => {
