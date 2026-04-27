@@ -1,0 +1,1 @@
+- test: fix authorization message assertion and sync profile tests

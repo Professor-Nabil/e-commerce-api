@@ -1,0 +1,1 @@
+- feat: implement profile management with TS fixes, tests, and swagger docs
