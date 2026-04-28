@@ -13,12 +13,22 @@ import {
   apiLimiter,
   authLimiter,
 } from "./middlewares/rate-limit.middleware.js";
+import morgan from "morgan";
+import logger from "./config/logger.js";
 
 const app = express();
 
 // 1. TOP MIDDLEWARES (Config & Parsers)
 app.use(cors());
 app.use(express.json());
+
+// Log HTTP requests
+app.use(
+  morgan("combined", {
+    stream: { write: (message) => logger.info(message.trim()) },
+  }),
+);
+
 app.use("/api", apiLimiter); // Apply general limit to all /api routes
 
 // 2. ROUTES

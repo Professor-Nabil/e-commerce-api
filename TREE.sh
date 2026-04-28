@@ -81,3 +81,5 @@
 ./src/config/multer.ts
 
 ./tests/integration/safety/rate-limit.test.ts
+
+./src/config/logger.ts
