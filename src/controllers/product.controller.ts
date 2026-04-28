@@ -10,7 +10,17 @@ export const getProducts = async (
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
 
-    const result = await ProductService.getAllProducts(page, limit);
+    const filters = {
+      categoryId: req.query.categoryId as string,
+      minPrice: req.query.minPrice
+        ? parseFloat(req.query.minPrice as string)
+        : undefined,
+      maxPrice: req.query.maxPrice
+        ? parseFloat(req.query.maxPrice as string)
+        : undefined,
+    };
+
+    const result = await ProductService.getAllProducts(page, limit, filters);
     res.json(result);
   } catch (error) {
     next(error);

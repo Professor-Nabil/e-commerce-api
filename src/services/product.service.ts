@@ -1,32 +1,41 @@
 // ./src/services/product.service.ts
 import { prisma } from "../config/prisma.js";
 
-export const getAllProducts = async (page: number = 1, limit: number = 10) => {
+export const getAllProducts = async (
+  page: number = 1,
+  limit: number = 10,
+  filters: { categoryId?: string; minPrice?: number; maxPrice?: number } = {},
+) => {
   const skip = (page - 1) * limit;
 
-  // Run count and fetch in parallel for efficiency
+  // Build dynamic where clause
+  const where: any = {
+    isDeleted: false,
+    ...(filters.categoryId && {
+      categories: { some: { id: filters.categoryId } },
+    }),
+    ...((filters.minPrice !== undefined || filters.maxPrice !== undefined) && {
+      price: {
+        ...(filters.minPrice !== undefined && { gte: filters.minPrice }),
+        ...(filters.maxPrice !== undefined && { lte: filters.maxPrice }),
+      },
+    }),
+  };
+
   const [products, total] = await Promise.all([
     prisma.product.findMany({
-      where: { isDeleted: false },
-      include: {
-        categories: true,
-        images: true,
-      },
+      where,
+      include: { categories: true, images: true },
       orderBy: { createdAt: "desc" },
       skip,
       take: limit,
     }),
-    prisma.product.count({ where: { isDeleted: false } }),
+    prisma.product.count({ where }),
   ]);
 
   return {
     products,
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
+    meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
   };
 };
 

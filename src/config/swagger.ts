@@ -288,6 +288,24 @@ export const swaggerSpec = {
             in: "query",
             schema: { type: "integer", default: 10 },
           },
+          {
+            name: "categoryId",
+            in: "query",
+            schema: { type: "string" },
+            description: "Filter products by Category UUID",
+          },
+          {
+            name: "minPrice",
+            in: "query",
+            schema: { type: "number" },
+            description: "Filter products with price greater than or equal to",
+          },
+          {
+            name: "maxPrice",
+            in: "query",
+            schema: { type: "number" },
+            description: "Filter products with price less than or equal to",
+          },
         ],
         responses: {
           200: {

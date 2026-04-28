@@ -29,6 +29,7 @@
 ./src/schemas/product.schema.ts
 ./tests/integration/products/product.test.ts
 ./tests/integration/products/admin-product.test.ts
+./tests/integration/products/filtering.test.ts
 # Auth =======================================================
 ./src/routes/auth.routes.ts
 ./src/controllers/auth.controller.ts
