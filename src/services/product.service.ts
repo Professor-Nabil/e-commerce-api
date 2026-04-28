@@ -10,12 +10,23 @@ export const getAllProducts = async (
     maxPrice?: number;
     q?: string;
   } = {},
+  sort: string = "newest", // 👈 Add default sort
 ) => {
   const skip = (page - 1) * limit;
 
-  // Build dynamic where clause
+  // 1. Map sort string to Prisma orderBy
+  const sortMap: Record<string, any> = {
+    newest: { createdAt: "desc" },
+    oldest: { createdAt: "asc" },
+    price_asc: { price: "asc" },
+    price_desc: { price: "desc" },
+  };
+
+  const orderBy = sortMap[sort] || sortMap.newest;
+
   const where: any = {
     isDeleted: false,
+    // ... keep your existing where logic (categoryId, price, q)
     ...(filters.categoryId && {
       categories: { some: { id: filters.categoryId } },
     }),
@@ -37,7 +48,7 @@ export const getAllProducts = async (
     prisma.product.findMany({
       where,
       include: { categories: true, images: true },
-      orderBy: { createdAt: "desc" },
+      orderBy, // 👈 Use the mapped orderBy
       skip,
       take: limit,
     }),

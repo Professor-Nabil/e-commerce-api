@@ -312,6 +312,16 @@ export const swaggerSpec = {
             schema: { type: "number" },
             description: "Filter products with price less than or equal to",
           },
+          {
+            name: "sort",
+            in: "query",
+            schema: {
+              type: "string",
+              enum: ["newest", "oldest", "price_asc", "price_desc"],
+              default: "newest",
+            },
+            description: "Sort order for products",
+          },
         ],
         responses: {
           200: {

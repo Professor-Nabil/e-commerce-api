@@ -9,6 +9,7 @@ export const getProducts = async (
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
+    const sort = (req.query.sort as string) || "newest";
 
     const filters = {
       q: req.query.q as string,
@@ -21,7 +22,12 @@ export const getProducts = async (
         : undefined,
     };
 
-    const result = await ProductService.getAllProducts(page, limit, filters);
+    const result = await ProductService.getAllProducts(
+      page,
+      limit,
+      filters,
+      sort,
+    );
     res.json(result);
   } catch (error) {
     next(error);

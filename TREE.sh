@@ -31,6 +31,7 @@
 ./tests/integration/products/admin-product.test.ts
 ./tests/integration/products/filtering.test.ts
 ./tests/integration/products/search.test.ts
+./tests/integration/products/sorting.test.ts
 # Auth =======================================================
 ./src/routes/auth.routes.ts
 ./src/controllers/auth.controller.ts
