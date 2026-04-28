@@ -35,6 +35,7 @@
 ./src/services/auth.service.ts
 ./src/schemas/auth.schema.ts
 ./tests/integration/auth/auth.test.ts
+./tests/integration/auth/password-reset.test.ts
 # Cart =======================================================
 ./src/routes/cart.routes.ts
 ./src/controllers/cart.controller.ts

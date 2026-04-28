@@ -178,6 +178,63 @@ export const swaggerSpec = {
         },
       },
     },
+    // Inside paths object in src/config/swagger.ts
+    "/api/auth/forgot-password": {
+      post: {
+        tags: ["Authentication"],
+        summary: "Request a password reset token",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["email"],
+                properties: {
+                  email: { type: "string", format: "email" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Reset link generated (check console)" },
+          404: { description: "Email not found" },
+        },
+      },
+    },
+    "/api/auth/reset-password/{token}": {
+      post: {
+        tags: ["Authentication"],
+        summary: "Reset password using token",
+        parameters: [
+          {
+            name: "token",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["password"],
+                properties: {
+                  password: { type: "string", minLength: 8 },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Password updated successfully" },
+          400: { description: "Invalid or expired token" },
+        },
+      },
+    },
     // Inside paths object
     "/api/users/me/profile": {
       get: {

@@ -13,3 +13,18 @@ export const LoginSchema = z.object({
     password: z.string(), // No need for min length here, just check if it's there
   }),
 });
+
+export const ForgotPasswordSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+  }),
+});
+
+export const ResetPasswordSchema = z.object({
+  params: z.object({
+    token: z.string(),
+  }),
+  body: z.object({
+    password: z.string().min(8),
+  }),
+});

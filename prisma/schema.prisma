@@ -19,13 +19,17 @@ enum UserStatus {
 }
 
 model User {
-  id        String     @id @default(uuid()) // Unguessable ID
-  email     String     @unique
-  password  String
-  role      Role       @default(CUSTOMER)
-  status    UserStatus @default(ACTIVE)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id                String     @id @default(uuid()) // Unguessable ID
+  email             String     @unique
+  password          String
+  // --- Password Reset Fields ---
+  resetToken        String?    @unique
+  resetTokenExpires DateTime?
+  // -----------------------------
+  role              Role       @default(CUSTOMER)
+  status            UserStatus @default(ACTIVE)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
   // Relationships
   profile Profile?

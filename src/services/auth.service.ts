@@ -1,7 +1,9 @@
+// ./src/services/auth.service.ts
 import { prisma } from "../config/prisma.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AppError } from "../utils/appError.js";
+import crypto from "crypto";
 
 export const registerUser = async (userData: any) => {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -62,4 +64,59 @@ export const loginUser = async (credentials: any) => {
   );
 
   return { token, user: { id: user.id, email: user.email, role: user.role } };
+};
+
+export const generateResetToken = async (email: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  // Security Tip: In a real production app, you might not want to
+  // throw a 404 here to prevent "email harvesting," but for our
+  // MVP/Dev stage, this is fine.
+  if (!user) throw new AppError("No user found with that email", 404);
+
+  // 1. Create a random string (The secret the user gets)
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  // 2. SHA-256 Hash the token for the database
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // 3. Store the hash and an expiry (10 mins)
+  await prisma.user.update({
+    where: { email },
+    data: {
+      resetToken: hashedToken,
+      resetTokenExpires: new Date(Date.now() + 10 * 60 * 1000),
+    },
+  });
+
+  return resetToken; // User gets the raw string
+};
+
+export const resetUserPassword = async (token: string, newPassword: string) => {
+  // 1. Hash the token provided by the user to match against the DB
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await prisma.user.findFirst({
+    where: {
+      resetToken: hashedToken,
+      resetTokenExpires: { gt: new Date() },
+    },
+  });
+
+  if (!user) throw new AppError("Token is invalid or has expired", 400);
+
+  // 2. NOW use bcrypt for the actual password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      password: hashedPassword,
+      resetToken: null, // Clear the token so it can't be used again
+      resetTokenExpires: null,
+    },
+  });
 };
