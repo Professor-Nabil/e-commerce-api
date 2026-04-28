@@ -27,7 +27,7 @@
 - **Auth & Profile**
   - [x] Register & Login (JWT)
   - [x] Update Profile (Shipping Address, Name)
-  - [ ] Password Reset flow
+  - [x] Password Reset flow
 - **Cart & Checkout**
   - [x] View current cart
   - [x] Add item to cart
@@ -38,7 +38,7 @@
 - **Order History**
   - [x] View order history list
   - [x] View historical price (Price at time of purchase)
-  - [ ] View details of a specific past order by ID
+  - [x] View details of a specific past order by ID
 
 ## 🌐 Anyone (Public Discovery)
 
@@ -46,10 +46,10 @@
   - [x] View all products
   - [x] View product by ID
 - **Discovery Optimization**
-  - [ ] **Pagination**: (Essential for your Arch/Terminal performance too!)
-  - [ ] **Filtering**: By category or price
-  - [ ] **Searching**: Keyword search (`/products?q=keyboard`)
-  - [ ] **Sorting**: (Price: High/Low, Newest)
+  - [x] **Pagination**: (Essential for your Arch/Terminal performance too!)
+  - [x] **Filtering**: By category or price
+  - [x] **Searching**: Keyword search (`/products?q=keyboard`)
+  - [x] **Sorting**: (Price: High/Low, Newest)
 
 ## ⚙️ System & Technical (The "Invisible" Quality)
 
@@ -60,6 +60,6 @@
   - [x] Unit/Integration tests for Cart/Checkout
   - [x] **Unit/Integration tests for Admin routes** (Status update & Audit) — **[NEWLY DONE]**
 - **Safety & Performance**
-  - [ ] **Rate Limiting**: (Protecting your login from brute force)
-  - [ ] **Logging**: (Tracking errors in production)
+  - [x] **Rate Limiting**: (Protecting your login from brute force)
+  - [x] **Logging**: (Tracking errors in production)
   - [x] **Environment Management**: (Separation of `ecommerce_db` and `ecommerce_test_db`)
