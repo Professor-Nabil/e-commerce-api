@@ -9,12 +9,17 @@ import cartRoutes from "./routes/cart.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import {
+  apiLimiter,
+  authLimiter,
+} from "./middlewares/rate-limit.middleware.js";
 
 const app = express();
 
 // 1. TOP MIDDLEWARES (Config & Parsers)
 app.use(cors());
 app.use(express.json());
+app.use("/api", apiLimiter); // Apply general limit to all /api routes
 
 // 2. ROUTES
 app.get("/", (_req, res) => {
@@ -27,7 +32,7 @@ app.get("/", (_req, res) => {
 app.use("/uploads", express.static("public/uploads"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/products", productRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter, authRoutes); // Apply strict limit specifically to auth
 app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);

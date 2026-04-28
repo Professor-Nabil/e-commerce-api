@@ -22,6 +22,7 @@
 ./src/middlewares/auth.middleware.ts
 ./src/middlewares/validate.middleware.ts
 ./src/middlewares/role.middleware.ts
+./src/middlewares/rate-limit.middleware.ts
 # Product ====================================================
 ./src/routes/product.routes.ts
 ./src/controllers/product.controller.ts
@@ -78,3 +79,5 @@
 
 ./public/uploads/
 ./src/config/multer.ts
+
+./tests/integration/safety/rate-limit.test.ts
