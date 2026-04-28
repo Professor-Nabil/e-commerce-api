@@ -1,0 +1,1 @@
+- docs: generate comprehensive README for MVP completion

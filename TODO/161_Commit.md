@@ -1,0 +1,1 @@
+- feat(auth): implement secure password reset flow with token hashing and integration tests

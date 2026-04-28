@@ -1,0 +1,1 @@
+- feat(products): implement keyword search and update swagger documentation

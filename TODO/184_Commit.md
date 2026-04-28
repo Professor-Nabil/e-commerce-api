@@ -1,0 +1,1 @@
+- security: implement rate limiting for global API and auth routes

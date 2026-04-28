@@ -1,0 +1,1 @@
+- feat(products): add category and price range filtering to product discovery

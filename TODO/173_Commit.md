@@ -1,0 +1,1 @@
+- feat(products): implement offset pagination for discovery and update test assertions

@@ -1,0 +1,1 @@
+- feat(orders): add order detail view with implicit m-to-m handling and security tests
