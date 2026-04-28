@@ -289,6 +289,12 @@ export const swaggerSpec = {
             schema: { type: "integer", default: 10 },
           },
           {
+            name: "q",
+            in: "query",
+            schema: { type: "string" },
+            description: "Keyword search for product name or description",
+          },
+          {
             name: "categoryId",
             in: "query",
             schema: { type: "string" },

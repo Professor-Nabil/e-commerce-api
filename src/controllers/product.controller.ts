@@ -11,6 +11,7 @@ export const getProducts = async (
     const limit = parseInt(req.query.limit as string) || 10;
 
     const filters = {
+      q: req.query.q as string,
       categoryId: req.query.categoryId as string,
       minPrice: req.query.minPrice
         ? parseFloat(req.query.minPrice as string)

@@ -4,7 +4,12 @@ import { prisma } from "../config/prisma.js";
 export const getAllProducts = async (
   page: number = 1,
   limit: number = 10,
-  filters: { categoryId?: string; minPrice?: number; maxPrice?: number } = {},
+  filters: {
+    categoryId?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    q?: string;
+  } = {},
 ) => {
   const skip = (page - 1) * limit;
 
@@ -19,6 +24,12 @@ export const getAllProducts = async (
         ...(filters.minPrice !== undefined && { gte: filters.minPrice }),
         ...(filters.maxPrice !== undefined && { lte: filters.maxPrice }),
       },
+    }),
+    ...(filters.q && {
+      OR: [
+        { name: { contains: filters.q } },
+        { description: { contains: filters.q } },
+      ],
     }),
   };
 
