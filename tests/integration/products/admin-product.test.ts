@@ -1,3 +1,4 @@
+// ./tests/integration/products/admin-product.test.ts
 import { describe, it, expect, beforeAll } from "vitest";
 import request from "supertest";
 import app from "../../../src/app.js";
@@ -75,8 +76,11 @@ describe("Admin Product Management (Update & Soft Delete)", () => {
     it("should hidden the soft-deleted product from public list", async () => {
       const res = await request(app).get("/api/products");
 
-      // The product we just deleted should not be in the list
-      const productInList = res.body.find((p: any) => p.id === targetProductId);
+      // Change res.body to res.body.products
+      const productInList = res.body.products.find(
+        (p: any) => p.id === targetProductId,
+      );
+
       expect(productInList).toBeUndefined();
     });
 

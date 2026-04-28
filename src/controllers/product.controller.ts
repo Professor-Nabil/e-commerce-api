@@ -2,34 +2,21 @@ import { Request, Response, NextFunction } from "express";
 import * as ProductService from "../services/product.service.js";
 
 export const getProducts = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const products = await ProductService.getAllProducts();
-    res.json(products);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const result = await ProductService.getAllProducts(page, limit);
+    res.json(result);
   } catch (error) {
-    console.error("Error fetching products:", error);
-    // res.status(500).json({ error: "Internal Server Error" });
-    // res.status(500).json({ error: "Failed to fetch products" });
-    // This sends the error to your errorHandler middleware!
     next(error);
   }
 };
 
-// export const createProduct = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   try {
-//     const product = await ProductService.createProduct(req.body);
-//     res.status(201).json(product);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 export const createProduct = async (
   req: Request,
   res: Response,
@@ -81,18 +68,6 @@ export const getProductById = async (
   }
 };
 
-// export const updateProduct = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   try {
-//     const updated = await ProductService.updateProduct(req.params.id, req.body);
-//     res.json(updated);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 export const updateProduct = async (
   req: Request,
   res: Response,

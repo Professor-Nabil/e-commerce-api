@@ -155,3 +155,33 @@ describe("Product Management Integration", () => {
     });
   });
 });
+
+describe("Product Pagination", () => {
+  it("should return the products wrapped in a paginated object", async () => {
+    const res = await request(app).get("/api/products?page=1&limit=5");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("products");
+    expect(res.body).toHaveProperty("meta");
+    expect(Array.isArray(res.body.products)).toBe(true);
+    expect(res.body.meta.limit).toBe(5);
+    expect(res.body.meta.page).toBe(1);
+  });
+
+  it("should respect the limit parameter", async () => {
+    // Create at least 3 products first if your test DB is empty,
+    // but usually, previous tests have already seeded some.
+    const res = await request(app).get("/api/products?limit=2");
+
+    expect(res.body.products.length).toBeLessThanOrEqual(2);
+    expect(res.body.meta.limit).toBe(2);
+  });
+
+  it("should return correct metadata for total pages", async () => {
+    const res = await request(app).get("/api/products?limit=1");
+
+    expect(res.body.meta).toHaveProperty("total");
+    expect(res.body.meta).toHaveProperty("totalPages");
+    expect(typeof res.body.meta.total).toBe("number");
+  });
+});

@@ -276,15 +276,40 @@ export const swaggerSpec = {
     "/api/products": {
       get: {
         tags: ["Products"],
-        summary: "Get all products",
+        summary: "List all products (Paginated)",
+        parameters: [
+          {
+            name: "page",
+            in: "query",
+            schema: { type: "integer", default: 1 },
+          },
+          {
+            name: "limit",
+            in: "query",
+            schema: { type: "integer", default: 10 },
+          },
+        ],
         responses: {
           200: {
-            description: "List of products",
+            description: "Paginated products",
             content: {
               "application/json": {
                 schema: {
-                  type: "array",
-                  items: { $ref: "#/components/schemas/Product" },
+                  type: "object",
+                  properties: {
+                    products: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Product" },
+                    },
+                    meta: {
+                      type: "object",
+                      properties: {
+                        total: { type: "integer" },
+                        page: { type: "integer" },
+                        totalPages: { type: "integer" },
+                      },
+                    },
+                  },
                 },
               },
             },

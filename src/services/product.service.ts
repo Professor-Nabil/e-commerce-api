@@ -1,15 +1,33 @@
 // ./src/services/product.service.ts
 import { prisma } from "../config/prisma.js";
 
-export const getAllProducts = async () => {
-  return await prisma.product.findMany({
-    where: { isDeleted: false }, // Only show active products
-    include: {
-      categories: true,
-      images: true,
+export const getAllProducts = async (page: number = 1, limit: number = 10) => {
+  const skip = (page - 1) * limit;
+
+  // Run count and fetch in parallel for efficiency
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where: { isDeleted: false },
+      include: {
+        categories: true,
+        images: true,
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.product.count({ where: { isDeleted: false } }),
+  ]);
+
+  return {
+    products,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     },
-    orderBy: { createdAt: "desc" },
-  });
+  };
 };
 
 export const updateProduct = async (
