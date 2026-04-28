@@ -31,6 +31,33 @@ export const getOrderHistory = async (
   }
 };
 
+export const getOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const order = await OrderService.getOrderDetails(id);
+
+    if (!order) {
+      throw new AppError("Order not found", 404);
+    }
+
+    // 🛡️ Security: Check if owner or admin
+    const isOwner = order.userId === req.user!.id;
+    const isAdmin = ["ADMIN", "SUPER_ADMIN"].includes(req.user!.role);
+
+    if (!isOwner && !isAdmin) {
+      throw new AppError("Forbidden: You do not own this order", 403);
+    }
+
+    res.status(200).json(order);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAllOrders = async (
   _req: Request,
   res: Response,

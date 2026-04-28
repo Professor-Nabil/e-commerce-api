@@ -1,5 +1,5 @@
+// ./src/services/product.service.ts
 import { prisma } from "../config/prisma.js";
-import { Prisma } from "@prisma/client"; // Import the Prisma namespace
 
 export const getAllProducts = async () => {
   return await prisma.product.findMany({
@@ -12,15 +12,6 @@ export const getAllProducts = async () => {
   });
 };
 
-// export const updateProduct = async (
-//   id: string,
-//   data: Prisma.ProductUpdateInput,
-// ) => {
-//   return await prisma.product.update({
-//     where: { id },
-//     data,
-//   });
-// };
 export const updateProduct = async (
   id: string,
   data: any,
@@ -54,13 +45,6 @@ export const softDeleteProduct = async (id: string) => {
   });
 };
 
-// Old Code:
-// export const createProduct = async (data: Prisma.ProductCreateInput) => {
-//   return await prisma.product.create({
-//     data,
-//   });
-// };
-// New Code:
 export const createProduct = async (data: any, filePaths: string[] = []) => {
   const { categoryNames, ...productData } = data;
 

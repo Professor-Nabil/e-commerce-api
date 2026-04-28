@@ -75,6 +75,24 @@ export const getOrderHistory = async (userId: string) => {
   });
 };
 
+export const getOrderDetails = async (orderId: string) => {
+  return await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      items: {
+        include: {
+          product: {
+            select: {
+              name: true,
+              images: { take: 1 }, // Get one thumbnail
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
 export const getAllOrders = async () => {
   return await prisma.order.findMany({
     include: {

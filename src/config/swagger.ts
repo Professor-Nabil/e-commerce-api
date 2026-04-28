@@ -531,7 +531,6 @@ export const swaggerSpec = {
         },
       },
     },
-    // ... inside paths ...
     "/api/orders": {
       get: {
         tags: ["Orders"],
@@ -552,6 +551,56 @@ export const swaggerSpec = {
             },
           },
           401: { description: "Unauthorized - Valid JWT required" },
+        },
+      },
+    },
+    "/api/orders/{id}": {
+      get: {
+        tags: ["Orders"],
+        summary: "Get specific order details",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            description: "Order UUID",
+          },
+        ],
+        responses: {
+          200: {
+            description: "Details of the order",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    totalAmount: { type: "number" },
+                    status: { type: "string" },
+                    createdAt: { type: "string" },
+                    items: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          price: { type: "number" },
+                          quantity: { type: "integer" },
+                          product: {
+                            type: "object",
+                            properties: { name: { type: "string" } },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          403: { description: "Forbidden - Not your order" },
+          404: { description: "Order not found" },
         },
       },
     },

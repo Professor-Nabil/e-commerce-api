@@ -50,6 +50,8 @@
 ./src/services/order.service.ts
 ./tests/e2e/checkout.test.ts
 ./tests/integration/orders/orders.test.ts
+./tests/integration/orders/admin-order.test.ts
+./tests/integration/orders/order-details.test.ts
 
 # Category ===================================================
 ./src/routes/category.routes.ts
